@@ -1,5 +1,5 @@
 
-# Digital Market Place API with Clean code Architecture pattern
+# Clean code Architecture pattern applied to Digital Market Place API. 
 
 <div style="width:100%; text-align:center">
   <img src="public/images/clean-code_arch.jpeg" width="600">
