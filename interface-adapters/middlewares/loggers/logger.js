@@ -1,8 +1,8 @@
-const { format } = require("date-fns");
-const { v4: uuid } = require("uuid");
-const fs = require("fs");
-const fsPromises = require("fs").promises;
-const path = require("path");
+const { format } = require('date-fns');
+const { v4: uuid } = require('uuid');
+const fs = require('fs');
+const fsPromises = require('fs').promises;
+const path = require('path');
 
 /**
  * Asynchronously logs events with a message to a specified log file.
@@ -21,19 +21,15 @@ const path = require("path");
 //   });
 // };
 
-
 const logEvents = async (message, logFileName) => {
-  const dateTime = format(new Date(), "yyyy-MM-dd\tHH:mm:ss");
+  const dateTime = format(new Date(), 'yyyy-MM-dd\tHH:mm:ss');
   const logItem = `${dateTime}\t${uuid()}\t${message}\n`;
 
   try {
-    if (!fs.existsSync(path.join(__dirname, "..", "logs"))) {
-      await fsPromises.mkdir(path.join(__dirname, "..", "logs"));
+    if (!fs.existsSync(path.join(__dirname, '..', 'logs'))) {
+      await fsPromises.mkdir(path.join(__dirname, '..', 'logs'));
     }
-    await fsPromises.appendFile(
-      path.join(__dirname, "..", "logs", logFileName),
-      logItem
-    );
+    await fsPromises.appendFile(path.join(__dirname, '..', 'logs', logFileName), logItem);
   } catch (err) {
     console.log(err);
   }
@@ -48,7 +44,7 @@ const logEvents = async (message, logFileName) => {
  * @return {void}
  */
 const logger = (err, req, res, next) => {
-  logEvents(`${req.method}\t${req.url}\t${err.TypeError}`, "reqLog.log");
+  logEvents(`${req.method}\t${req.url}\t${err.TypeError}`, 'reqLog.log');
   console.log(`${req.method} ${req.path}`);
   next();
 };

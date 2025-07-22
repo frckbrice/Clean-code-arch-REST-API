@@ -1,8 +1,6 @@
-
 // const { UniqueConstraintError, InvalidPropertyError, RequiredParameterError } = require("../../config/validators-errors/errors");
 // const { makeHttpError } = require("../../config/validators-errors/http-error");
 // const { logEvents } = require("../../middlewares/loggers/logger");
-
 
 // module.exports = {
 //     /**
@@ -345,8 +343,6 @@
 //         }
 //     },
 
-
-
 //     //block user
 //     blockUserController: ({ blockUserUseCaseHandler }) => async function blockUserControllerHandler(httpRequest) {
 //         const { userId } = httpRequest.params;
@@ -377,7 +373,6 @@
 //         }
 
 //     },
-
 
 //     //unblock user
 //     unBlockUserController: ({ unBlockUserUseCaseHandler }) => async function unBlockUserControllerHandler(httpRequest) {

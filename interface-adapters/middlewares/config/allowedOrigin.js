@@ -1,5 +1,3 @@
 module.exports = {
-  allowedOrigin: [
-    "http://localhost:3001",
-  ],
+  allowedOrigin: ['http://localhost:3001'],
 };
