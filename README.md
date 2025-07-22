@@ -59,6 +59,13 @@ public/               # Static files and HTML views
 - Input validation and error handling
 - Modular, testable codebase
 
+## Stack
+- Express.js
+- Javascript
+- Docker
+- Jest
+- MongoDB + Mongo-client + Mongosh
+
 ## Getting Started
 
 ### Prerequisites
