@@ -1,4 +1,4 @@
-![Clean Architecture Diagram](./public/clean-architecture.png)
+![Clean Architecture Diagram](./public/images/clean-architecture.png)
 
 # Digital Market Place API
 
