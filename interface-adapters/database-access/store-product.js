@@ -196,10 +196,11 @@ const updatedProduct = async ({ productId, dbconnection, logEvents, ...productDa
   }
 };
 
-// create a raiting document and update product document alongside
+// create a rating document and update product document alongside
+// we are creating transaction session to ensure data consistency
 
 const rateProduct = async ({ logEvents, ...ratingModel }) => {
-  const client = new MongoClient(process.env.DB_URI);
+  const client = new MongoClient(process.env.MONGODB_URI);
   const session = client.startSession();
 
   /* start a transaction session */

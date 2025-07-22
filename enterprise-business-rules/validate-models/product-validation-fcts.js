@@ -72,28 +72,28 @@ function validateColors(colors, InvalidPropertyError) {
 }
 
 // constructs an enumeration of brands
-function validateBrands(brands, InvalidPropertyError) {
-  console.log('brand: ', brands);
-  if (!Array.isArray(brands)) {
-    return [brands];
-  }
+// function validateBrands(brands, InvalidPropertyError) {
+//   console.log('brand: ', brands);
+//   if (!Array.isArray(brands)) {
+//     return [brands];
+//   }
 
-  const validbrands = new Set([
-    'Apple',
-    'Samsung',
-    'Microsoft',
-    'Lenovo',
-    'Acer',
-    'Asus',
-    'HP',
-    'Dell',
-  ]);
-  if (brands.length === 0 || !brands.some((color) => validbrands.has(color))) {
-    throw new InvalidPropertyError(`A product must have at least one color.`);
-  }
+//   const validbrands = new Set([
+//     'Apple',
+//     'Samsung',
+//     'Microsoft',
+//     'Lenovo',
+//     'Acer',
+//     'Asus',
+//     'HP',
+//     'Dell',
+//   ]);
+//   if (brands.length === 0 || !brands.some((color) => validbrands.has(color))) {
+//     throw new InvalidPropertyError(`A product must have at least one color.`);
+//   }
 
-  return [...new Set(brands)];
-}
+//   return [...new Set(brands)];
+// }
 
 //validate and normalize product rating: rating is an array of refences to users in the users collection
 // function validateRating(rating, InvalidPropertyError) {

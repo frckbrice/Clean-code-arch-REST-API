@@ -6,10 +6,21 @@ module.exports = async function setupDb() {
   console.log('Setting up database indexes...');
   const db = await dbconnection();
 
-  const allProductsIndexName = await db.collection('products').listIndexes().toArray();
+  // PRODUCTS
+  let allProductsIndexName = [];
+  try {
+    allProductsIndexName = await db.collection('products').listIndexes().toArray();
+  } catch (err) {
+    if (err.codeName === 'NamespaceNotFound') {
+      await db.collection('products').insertOne({ __seed: true });
+      await db.collection('products').deleteOne({ __seed: true });
+      allProductsIndexName = [];
+    } else {
+      throw err;
+    }
+  }
 
   let indexArr = [];
-  // create indexes only if not exist
   allProductsIndexName.forEach((element) => {
     if (element.name === 'productTextIndex' || element.name === 'productUniqueIndex') {
       return;
@@ -37,7 +48,19 @@ module.exports = async function setupDb() {
     ];
   });
 
-  const allUsersIndexName = await db.collection('users').listIndexes().toArray();
+  // USERS
+  let allUsersIndexName = [];
+  try {
+    allUsersIndexName = await db.collection('users').listIndexes().toArray();
+  } catch (err) {
+    if (err.codeName === 'NamespaceNotFound') {
+      await db.collection('users').insertOne({ __seed: true });
+      await db.collection('users').deleteOne({ __seed: true });
+      allUsersIndexName = [];
+    } else {
+      throw err;
+    }
+  }
   allUsersIndexName.forEach((element) => {
     if (element.name === 'userUniqueIndex') {
       return;
@@ -50,7 +73,19 @@ module.exports = async function setupDb() {
     ];
   });
 
-  const allRatingsIndexName = await db.collection('ratings').listIndexes().toArray();
+  // RATINGS
+  let allRatingsIndexName = [];
+  try {
+    allRatingsIndexName = await db.collection('ratings').listIndexes().toArray();
+  } catch (err) {
+    if (err.codeName === 'NamespaceNotFound') {
+      await db.collection('ratings').insertOne({ __seed: true });
+      await db.collection('ratings').deleteOne({ __seed: true });
+      allRatingsIndexName = [];
+    } else {
+      throw err;
+    }
+  }
   allRatingsIndexName.forEach((element) => {
     if (element.name === 'ratingsUniqueIndex') {
       // db.collection('ratings').dropIndex('ratingsUniqueIndex');

@@ -4,14 +4,15 @@ services:
     build: .
     container_name: clean-arch-app
     ports:
-      - '5000:5000'
+      - '5001:5000' # Change 5001 to any free port
     environment:
       - PORT=5000
-      - MONGODB_URI=mongodb://mongo:27017/cleanarchdb
-      - JWT_SECRET=your_jwt_secret
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - mongo
     restart: unless-stopped
+
   mongo:
     image: mongo:6.0
     container_name: clean-arch-mongo

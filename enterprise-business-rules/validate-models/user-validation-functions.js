@@ -5,7 +5,7 @@ const {
 
 // TODO: remove this external data storage and package here  and from here.
 // We don't respect the clean code architecture with this
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { ObjectId } = require('mongodb');
 
 /**

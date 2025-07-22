@@ -3,7 +3,7 @@ const userUseCaseHandlers = require('../../../application-business-rules/use-cas
 
 const { makeHttpError } = require('../../validators-errors/http-error');
 const { logEvents } = require('../../middlewares/loggers/logger');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../../adapter/email-sending');
 
