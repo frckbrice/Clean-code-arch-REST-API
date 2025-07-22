@@ -1,41 +1,39 @@
-const { makeHttpError } = require("./http-error")
-
 class UniqueConstraintError extends Error {
   constructor(value) {
-    super(`${value} must be unique.`)
+    super(`${value} must be unique.`);
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, UniqueConstraintError)
+      Error.captureStackTrace(this, UniqueConstraintError);
     }
   }
 }
 
 class InvalidPropertyError extends Error {
   constructor(msg) {
-    super(msg)
+    super(msg);
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, InvalidPropertyError)
+      Error.captureStackTrace(this, InvalidPropertyError);
     }
   }
 }
 
 class RequiredParameterError extends Error {
   constructor(param) {
-    super(`${param} can not be null or undefined.`)
+    super(`${param} can not be null or undefined.`);
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, RequiredParameterError)
+      Error.captureStackTrace(this, RequiredParameterError);
     }
   }
 }
 
 //NOT FOUND
 const NotFound = (req, res, next) => {
-  const error = new Error(`Not Found - ${req.originalUrl}`)
-  res.status(404)
-  next(error)
-}
+  const error = new Error(`Not Found - ${req.originalUrl}`);
+  res.status(404);
+  next(error);
+};
 
 //Error Handler
 
@@ -44,11 +42,15 @@ const ErrorHandlerMiddleware = (err, req, res, next) => {
   res.status(statusCode);
   res.json({
     message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? null : err.stack
+    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
   });
-  next(err)
-}
-
+  next(err);
+};
 
 module.exports = {
-  UniqueConstraintError, InvalidPropertyError, RequiredParameterError, NotFound, ErrorHandlerMiddleware}
+  UniqueConstraintError,
+  InvalidPropertyError,
+  RequiredParameterError,
+  NotFound,
+  ErrorHandlerMiddleware,
+};

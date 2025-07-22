@@ -1,26 +1,27 @@
-
-const { InvalidPropertyError, RequiredParameterError } = require("../../interface-adapters/validators-errors/errors");
+const {
+  InvalidPropertyError,
+  RequiredParameterError,
+} = require('../../interface-adapters/validators-errors/errors');
 
 // TODO: remove this external data storage and package here  and from here.
 // We don't respect the clean code architecture with this
-const bcrypt = require("bcrypt");
-const { ObjectId } = require("mongodb");
-
-
+const bcrypt = require('bcryptjs');
+const { ObjectId } = require('mongodb');
 
 /**
-* Validates the format of an email address.
-*
-* @param {string} email - The email address to validate.
-* @return {boolean} Indicates whether the email address is in a valid format.
-*/
+ * Validates the format of an email address.
+ *
+ * @param {string} email - The email address to validate.
+ * @return {boolean} Indicates whether the email address is in a valid format.
+ */
 function validateEmail(email) {
-    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
-    if (!re.test(String(email).toLowerCase())) {
-        throw new InvalidPropertyError(" Invalid Email ")
-    };
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
+  if (!re.test(String(email).toLowerCase())) {
+    throw new InvalidPropertyError(' Invalid Email ');
+  }
 
-    return email;
+  return email;
 }
 
 /**
@@ -30,14 +31,12 @@ function validateEmail(email) {
  * @throws {InvalidPropertyError} If the name is less than 2 characters long.
  * @return {string} The validated name with '<' characters replaced, or 'No Name' if the name is falsy.
  */
-function validateName(name = "") {
-    if (name.length < 2) {
-        throw new InvalidPropertyError(
-            `A user's name must be at least 2 characters long.`
-        )
-    }
+function validateName(name = '') {
+  if (name.length < 2) {
+    throw new InvalidPropertyError(`A user's name must be at least 2 characters long.`);
+  }
 
-    return name.replace(/</g, "&lt;") || "No Name";
+  return name.replace(/</g, '&lt;') || 'No Name';
 }
 
 /**
@@ -47,14 +46,14 @@ function validateName(name = "") {
  * @throws {InvalidPropertyError} If the phone number is invalid.
  */
 function validatePhone(phone) {
-    const phoneRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{3})$/;
+  const phoneRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{3})$/;
 
-    // TODO : optimize phone number validation
-    if (!phoneRegex.test(phone) || phone.length < 11) {
-        throw new InvalidPropertyError(`A user's phone number is not valid.`);
-    }
+  // TODO : optimize phone number validation
+  if (!phoneRegex.test(phone) || phone.length < 11) {
+    throw new InvalidPropertyError(`A user's phone number is not valid.`);
+  }
 
-    return phone;
+  return phone;
 }
 
 /**
@@ -67,63 +66,43 @@ function validatePhone(phone) {
  * @return {Object} The normalized user data.
  */
 async function normalise({ firstName, lastName, email, ...otherInfo }) {
-    return {
-        ...otherInfo,
-        firstName: firstName.charAt(0).toUpperCase() + firstName.slice(1),
-        lastName: lastName.charAt(0).toUpperCase() + lastName.slice(1),
-        email: email ? email.toLowerCase() : ""
-    }
+  return {
+    ...otherInfo,
+    firstName: firstName.charAt(0).toUpperCase() + firstName.slice(1),
+    lastName: lastName.charAt(0).toUpperCase() + lastName.slice(1),
+    email: email ? email.toLowerCase() : '',
+  };
 }
 
-
 async function validatePassword(password) {
-    if (password.length < 8) {
-        throw new InvalidPropertyError(
-            `A user's password must be at least 8 characters long.`
-        )
-    }
-    const hashPw = await bcrypt.hash(password, 10); //generate salt and encrypt
-    return hashPw;
+  if (password.length < 8) {
+    throw new InvalidPropertyError(`A user's password must be at least 8 characters long.`);
+  }
+  const hashPw = await bcrypt.hash(password, 10); //generate salt and encrypt
+  return hashPw;
 }
 
 // Validate role of the user, either user or admin
-const validRoles = new Set(["user", "admin"]);
+const validRoles = new Set(['user', 'admin']);
 function validateRole(roles) {
-    // make role always an array
+  // make role always an array
 
-    if (!validRoles.has(roles)) {
-        throw new InvalidPropertyError(
-            `A user's role must be either 'user' or 'admin'.`
-        )
-    }
+  if (!validRoles.has(roles)) {
+    throw new InvalidPropertyError(`A user's role must be either 'user' or 'admin'.`);
+  }
 
-    if (!Array.isArray(roles)) {
-        roles = [roles];
-    }
-    return roles;
-}
-
-const validActive = new Set(["true", "false"]);
-function validateActive(active) {
-    if (!validActive.has(active)) {
-        throw new InvalidPropertyError(
-            `A user's active must be either 'true' or 'false'.`
-        )
-    }
-    if (!Array.isArray(active)) {
-        active = [active];
-    }
-    return active;
+  if (!Array.isArray(roles)) {
+    roles = [roles];
+  }
+  return roles;
 }
 
 //validate mongodb id
 function validateId(id) {
-    if (!ObjectId.isValid(id)) {
-        throw new InvalidPropertyError(
-            `Invalid ID`
-        )
-    }
-    return id;
+  if (!ObjectId.isValid(id)) {
+    throw new InvalidPropertyError(`Invalid ID`);
+  }
+  return id;
 }
 /**
  * Validates user data by calling individual validation functions for each field.
@@ -143,70 +122,80 @@ function validateId(id) {
  * - password: The result of validating the password.
  */
 async function validateUserData(userData) {
-    const errors = [];
-    const { firstName, lastName, email, mobile, password, roles, active, address, whishlist, passwordChangedAt,
-        passwordResetToken,
-        passwordResetExpires } = userData;
+  const errors = [];
+  const {
+    firstName,
+    lastName,
+    email,
+    mobile,
+    password,
+    roles,
+    active,
+    address,
+    whishlist,
+    passwordChangedAt,
+    passwordResetToken,
+    passwordResetExpires,
+  } = userData;
 
-    if (!firstName && !lastName) errors.push('user must have a first name or last name.');
-    if (!email) errors.push('user must have an email.');
-    if (!password) errors.push('user must have a password.');
-    if (!roles) errors.push('user must have a role');
-    if (typeof active !== "boolean") errors.push('user must have an active status');
+  if (!firstName && !lastName) errors.push('user must have a first name or last name.');
+  if (!email) errors.push('user must have an email.');
+  if (!password) errors.push('user must have a password.');
+  if (!roles) errors.push('user must have a role');
 
-    if (errors.length) {
-        throw new RequiredParameterError(errors.join(', '));
-    }
+  if (errors.length) {
+    throw new RequiredParameterError(errors.join(', '));
+  }
 
-    return {
-        email: validateEmail(email),
-        mobile: mobile ? validatePhone(mobile) : "",
-        password: await validatePassword(password),
-        firstName: firstName ? validateName(firstName) : "",
-        lastName: lastName ? validateName(lastName) : "",
-        roles: roles ? validateRole(roles) : ["user"],
-        active: active ?? false,
-        address: Array.isArray(address) ? address : address ? [address] : [],
-        whishlist: roles === "admin" ? [] : Array.isArray(whishlist) ? whishlist : whishlist ? [whishlist] : [],
-        cart: [],
-        isBlocked: false,
-        createdAt: new Date().toISOString(),
-        passwordChangedAt,
-        passwordResetToken,
-        passwordResetExpires
-    };
+  return {
+    email: validateEmail(email),
+    mobile: mobile ? validatePhone(mobile) : '',
+    password: await validatePassword(password),
+    firstName: firstName ? validateName(firstName) : '',
+    lastName: lastName ? validateName(lastName) : '',
+    roles: roles ? validateRole(roles) : ['user'],
+    active: active ?? false,
+    address: Array.isArray(address) ? address : address ? [address] : [],
+    whishlist:
+      roles === 'admin' ? [] : Array.isArray(whishlist) ? whishlist : whishlist ? [whishlist] : [],
+    cart: [],
+    isBlocked: false,
+    createdAt: new Date().toISOString(),
+    passwordChangedAt,
+    passwordResetToken,
+    passwordResetExpires,
+  };
 }
 
 async function validateUserDataUpdates({ firstName, lastName, mobile, roles, active, email }) {
+  const updatedValues = {
+    lastModified: { $currentDate: true },
+  };
+  if (firstName) {
+    updatedValues.firstName = validateName(firstName);
+  }
+  if (lastName) {
+    updatedValues.lastName = validateName(lastName);
+  }
+  if (mobile) {
+    updatedValues.mobile = validatePhone(mobile);
+  }
+  if (roles) {
+    updatedValues.roles = validateRole(roles);
+  }
+  if (active) {
+    updatedValues.active = active;
+  }
+  if (email) {
+    updatedValues.email = validateEmail(email);
+  }
 
-    const updatedValues = {
-        lastModified: { $currentDate: true }
-    };
-    if (firstName) {
-        updatedValues.firstName = validateName(firstName);
-    }
-    if (lastName) {
-        updatedValues.lastName = validateName(lastName);
-    }
-    if (mobile) {
-        updatedValues.mobile = validatePhone(mobile);
-    }
-    if (roles) {
-        updatedValues.roles = validateRole(roles);
-    }
-    if (active) {
-        updatedValues.active = active;
-    }
-    if (email) {
-        updatedValues.email = validateEmail(email);
-    }
-
-    return updatedValues;
+  return updatedValues;
 }
 
 module.exports = {
-    validateUserData,
-    normalise,
-    validateUserDataUpdates,
-    validateId
+  validateUserData,
+  normalise,
+  validateUserDataUpdates,
+  validateId,
 };
