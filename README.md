@@ -62,9 +62,9 @@ public/               # Static files and HTML views
 ## Stack
 - Express.js
 - Javascript
-- Docker
+- MongoDB doker image
 - Jest
-- MongoDB + Mongo-client + Mongosh
+- Mongo-client + Mongosh
 
 ## Getting Started
 
