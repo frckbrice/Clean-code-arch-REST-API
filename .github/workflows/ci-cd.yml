@@ -55,4 +55,4 @@ jobs:
           IMAGE=your-dockerhub-username/your-repo-name
           docker tag $IMAGE:latest $IMAGE:${{ github.sha }}
           docker push $IMAGE:latest
-          docker push $IMAGE:${{ github.sha }} 
+          docker push $IMAGE:${{ github.sha }}

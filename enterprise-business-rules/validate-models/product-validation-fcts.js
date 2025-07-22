@@ -5,8 +5,6 @@ function validateTitle({ title, InvalidPropertyError }) {
   return title.charAt(0).toUpperCase() + title.slice(1).toLowerCase();
 }
 
-//validate title length
-
 //validate and normalise product description
 function validateDescription({ description, InvalidPropertyError }) {
   if (description.length < 50) {
@@ -98,11 +96,11 @@ function validateBrands(brands, InvalidPropertyError) {
 }
 
 //validate and normalize product rating: rating is an array of refences to users in the users collection
-function validateRating(rating, InvalidPropertyError) {
-  const ratingObj = {};
+// function validateRating(rating, InvalidPropertyError) {
+//   const ratingObj = {};
 
-  return rating;
-}
+//   return rating;
+// }
 
 // validate image type for png jpg
 const validateImageType = (image, InvalidPropertyError) => {

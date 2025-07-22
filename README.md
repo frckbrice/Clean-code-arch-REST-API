@@ -5,6 +5,7 @@
 A Node.js REST API for a digital marketplace, structured according to Uncle Bob's Clean Architecture principles. This project demonstrates separation of concerns, testability, and scalability by organizing code into distinct layers: Enterprise Business Rules, Application Business Rules, Interface Adapters, and Frameworks & Drivers.
 
 ## Table of Contents
+
 - [Introduction](#introduction)
 - [Architecture Overview](#architecture-overview)
 - [Features](#features)
@@ -19,9 +20,11 @@ A Node.js REST API for a digital marketplace, structured according to Uncle Bob'
 - [License](#license)
 
 ## Introduction
+
 This backend API allows users to register, authenticate, and interact with products, blogs, and ratings. It is designed for maintainability and extensibility, following Clean Architecture best practices.
 
 ## Architecture Overview
+
 The project is organized into the following layers:
 
 - **Enterprise Business Rules**: Core business logic and domain models (`enterprise-business-rules/`).
@@ -45,6 +48,7 @@ public/               # Static files and HTML views
 ```
 
 ## Features
+
 - User registration and authentication (JWT)
 - Product CRUD operations
 - Blog and rating management
@@ -55,10 +59,12 @@ public/               # Static files and HTML views
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js (v18+ recommended)
 - MongoDB instance (local or cloud)
 
 ### Installation
+
 1. Clone the repository:
    ```bash
    git clone <repo-url>
@@ -84,6 +90,7 @@ public/               # Static files and HTML views
 The server will run at [http://localhost:5000](http://localhost:5000).
 
 ## Project Structure
+
 - `index.js` - Main entry point, sets up Express, routes, and middleware
 - `routes/` - Express route definitions for products, users, blogs
 - `interface-adapters/` - Controllers, DB access, adapters, and middleware
@@ -94,6 +101,7 @@ The server will run at [http://localhost:5000](http://localhost:5000).
 ## API Endpoints
 
 ### Products
+
 - `POST   /products/` - Create a new product
 - `GET    /products/` - Get all products
 - `GET    /products/:productId` - Get a product by ID
@@ -102,11 +110,13 @@ The server will run at [http://localhost:5000](http://localhost:5000).
 - `POST   /products/:productId/:userId/rating` - Rate a product
 
 ### Users & Auth
+
 - `POST   /users/register` - Register a new user
 - `POST   /users/login` - User login
 - `GET    /users/profile` - Get user profile (auth required)
 
 ### Blogs
+
 - `GET    /blogs/` - Get all blogs
 - `POST   /blogs/` - Create a new blog
 
@@ -163,4 +173,4 @@ The server will run at [http://localhost:5000](http://localhost:5000).
 
 ## License
 
-This project is licensed under the ISC License. See the [LICENSE](LICENSE) file for details. 
+This project is licensed under the ISC License. See the [LICENSE](LICENSE) file for details.

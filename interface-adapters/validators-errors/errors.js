@@ -1,5 +1,3 @@
-const { makeHttpError } = require('./http-error');
-
 class UniqueConstraintError extends Error {
   constructor(value) {
     super(`${value} must be unique.`);

@@ -1,3 +1,5 @@
+const { makeHttpError } = require('../../validators-errors/http-error');
+
 module.exports = {
   /**
    * Registers a new user using the provided user case handler.
@@ -410,13 +412,13 @@ module.exports = {
       }
       try {
         const blockedUser = await blockUserUseCaseHandler({ userId });
-        console.log(' from blockUserController controller handler: ', e);
+        console.log(' from blockUserController controller handler: ', blockedUser);
         return {
           headers: {
             'Content-Type': 'application/json',
           },
           statusCode: 201,
-          data: JSON.stringify({ message: 'user blocked successfully' }),
+          data: JSON.stringify({ message: 'user blocked successfully', blockedUser }),
         };
       } catch (e) {
         logEvents(
@@ -470,8 +472,6 @@ module.exports = {
   // user controller for forgot password
   forgotPasswordController: ({
     forgotPasswordUseCaseHandler,
-    UniqueConstraintError,
-    InvalidPropertyError,
     makeHttpError,
     logEvents,
     sendEmail,

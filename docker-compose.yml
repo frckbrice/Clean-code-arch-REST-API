@@ -4,7 +4,7 @@ services:
     build: .
     container_name: clean-arch-app
     ports:
-      - "5000:5000"
+      - '5000:5000'
     environment:
       - PORT=5000
       - MONGODB_URI=mongodb://mongo:27017/cleanarchdb
@@ -16,9 +16,9 @@ services:
     image: mongo:6.0
     container_name: clean-arch-mongo
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - mongo_data:/data/db
     restart: unless-stopped
 volumes:
-  mongo_data: 
+  mongo_data:

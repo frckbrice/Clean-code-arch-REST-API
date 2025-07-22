@@ -97,17 +97,6 @@ function validateRole(roles) {
   return roles;
 }
 
-const validActive = new Set(['true', 'false']);
-function validateActive(active) {
-  if (!validActive.has(active)) {
-    throw new InvalidPropertyError(`A user's active must be either 'true' or 'false'.`);
-  }
-  if (!Array.isArray(active)) {
-    active = [active];
-  }
-  return active;
-}
-
 //validate mongodb id
 function validateId(id) {
   if (!ObjectId.isValid(id)) {
@@ -153,7 +142,6 @@ async function validateUserData(userData) {
   if (!email) errors.push('user must have an email.');
   if (!password) errors.push('user must have a password.');
   if (!roles) errors.push('user must have a role');
-  if (typeof active !== 'boolean') errors.push('user must have an active status');
 
   if (errors.length) {
     throw new RequiredParameterError(errors.join(', '));

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const expressAsyncHandler = require('express-async-handler');
+const { logEvents } = require('./loggers/logger');
 
 const authVerifyJwt = expressAsyncHandler((req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
@@ -33,8 +34,8 @@ const authVerifyJwt = expressAsyncHandler((req, res, next) => {
       next();
     });
   } catch (error) {
-    console.error('catch error on authVerifyJwt', err);
-    logEvents(`${e.no}:${e.code}\t${e.name}\t${e.message}`, 'authVerifyJwt.log');
+    console.error('catch error on authVerifyJwt', error);
+    logEvents(`${error.no}:${error.code}\t${error.name}\t${error.message}`, 'authVerifyJwt.log');
   }
 });
 

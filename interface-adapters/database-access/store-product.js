@@ -2,6 +2,7 @@
 //collection, rating as an array of objects with reference to ratings collection, also a brand enumeration
 
 const { ObjectId, DBRef } = require('mongodb');
+const { logEvents } = require('../middlewares/loggers/logger');
 const MongoClient = require('mongodb').MongoClient;
 
 async function createProduct(productData, dbconnection, logEvents) {
@@ -59,7 +60,7 @@ const findOneProduct = async ({ productId, dbconnection }) => {
     const isDeleted = delete product._id;
 
     if (isDeleted) {
-      return { id, ...product };
+      return { id, ...rest };
     }
     // return rest;
   } catch (error) {
@@ -307,8 +308,8 @@ module.exports = ({ dbconnection, logEvents }) => {
       findOneProduct({ productId, dbconnection, logEvents }),
     findAllProductsDbHandler: async (filterOptions) =>
       findAllProducts({ dbconnection, logEvents, ...filterOptions }),
-    updateProductDbHandler: async ({ productId, productData }) =>
-      updateProduct({ productId, productData, dbconnection, logEvents }),
+    // updateProductDbHandler: async ({ productId, productData }) =>
+    //   updateProduct({ productId, productData, dbconnection, logEvents }),
     deleteProductDbHandler: async ({ productId }) =>
       deleteProduct({ productId, dbconnection, logEvents }),
     updateProductDbHandler: async ({ productId, ...productData }) =>

@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongodb');
 const { UniqueConstraintError } = require('../validators-errors/errors');
+const { logEvents } = require('../middlewares/loggers/logger');
 
 /**
  * Asynchronously finds a user by email in the given database connection.

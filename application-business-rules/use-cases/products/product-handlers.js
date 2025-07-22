@@ -1,3 +1,6 @@
+const productValidationFcts = require('../../../enterprise-business-rules/validate-models/product-validation-fcts');
+// const { findAllProductUseCaseHandler } = require('./product-handlers');
+
 /**
  * Creates a new product in the database using the provided product data.
  *
@@ -48,7 +51,7 @@ const findOneProductUseCase = ({ productValidation }) =>
 
 // find all product use case handler
 const findAllProductsUseCase = () =>
-  (findAllProductUseCaseHandler = async ({ dbProductHandler, filterOptions }) => {
+  async function findAllProductUseCaseHandler({ dbProductHandler, filterOptions }) {
     try {
       const allProducts = await dbProductHandler.findAllProductsDbHandler(filterOptions);
       // console.log("from find all products use case: ", allProducts);
@@ -57,7 +60,7 @@ const findAllProductsUseCase = () =>
       console.log('Error from fetch all product handler: ', e);
       throw new Error(e.message);
     }
-  });
+  };
 
 // delete product use case
 const deleteProductUseCase = () =>
@@ -66,7 +69,7 @@ const deleteProductUseCase = () =>
     const { InvalidPropertyError } = errorHandlers;
     try {
       // validate id
-      const uuid = productValidation.validateObjectId(productId, InvalidPropertyError);
+      const uuid = productValidationFcts.validateObjectId(productId, InvalidPropertyError);
       // check first that the product exists
       const existingProduct = await findOneProductDbHandler({ productId: uuid });
       if (!existingProduct) {
@@ -97,7 +100,7 @@ const updateProductUseCase = ({ makeProductModelHandler }) =>
     const { InvalidPropertyError } = errorHandlers;
     try {
       // validate id
-      const uuid = productValidation.validateObjectId(productId, InvalidPropertyError);
+      const uuid = productValidationFcts.validateObjectId(productId, InvalidPropertyError);
       // check first that the product exists
       const existingProduct = await findOneProductDbHandler({ productId: uuid });
       if (!existingProduct) {
