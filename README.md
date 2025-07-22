@@ -1,6 +1,9 @@
-![Clean Architecture Diagram](public/images/clean-code_arch.jpeg)
 
-# Digital Market Place API
+# Digital Market Place API with Clean code Architecture pattern
+
+<div style={{ width: "700px", height:"500px"}}>
+  ![Clean Architecture Diagram](public/images/clean-code_arch.jpeg)
+</div>
 
 A Node.js REST API for a digital marketplace, structured according to Uncle Bob's Clean Architecture principles. This project demonstrates separation of concerns, testability, and scalability by organizing code into distinct layers: Enterprise Business Rules, Application Business Rules, Interface Adapters, and Frameworks & Drivers.
 
