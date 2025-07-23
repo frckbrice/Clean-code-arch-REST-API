@@ -12,7 +12,6 @@ const {
   unBlockUserControllerHandler,
 } = userControllerHandlers;
 
-
 /**
  * @swagger
  * tags:

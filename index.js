@@ -43,9 +43,7 @@ const swaggerDefinition = {
 
 const options = {
   swaggerDefinition,
-  apis: [
-    './routes/*.js',
-  ],
+  apis: ['./routes/*.js'],
 };
 const swaggerSpec = swaggerJSDoc(options);
 
@@ -78,7 +76,6 @@ app.get('/', (_, res) => {
 });
 
 app.use('/', mainRouter);
-
 
 //for no specified endpoint that is not found. this must after all the middlewares
 app.all('*', (req, res) => {
