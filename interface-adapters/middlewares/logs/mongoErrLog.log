@@ -135,3 +135,8 @@
 	undefined	undefined
 2024-07-16	21:00:43	5b39b205-54bc-4f96-ab09-65775eaa1a6b	undefined:406884319C710000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:../deps/openssl/openssl/ssl/record/rec_layer_s3.c:1590:SSL alert number 80
 	undefined	undefined
+2025-07-23	07:14:12	58eb0f8b-aec2-40b1-8091-289cb613c0a4	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined
+2025-07-23	07:14:57	d47f2bdd-92c0-4cd7-a32d-ccec2a45c215	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined
+2025-07-23	07:17:30	f2e20017-1fcc-4bef-8464-7ee740310f5a	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined
+2025-07-23	07:18:38	3bde033b-bd88-4900-9e1d-b0f84551d1e3	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined
+2025-07-23	07:20:57	c84f4a6b-62e0-4395-8c9c-af7ca0783d06	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined

@@ -5,11 +5,8 @@ const path = require('path');
 
 const { dbconnection } = require('./interface-adapters/database-access/db-connection.js');
 const errorHandler = require('./interface-adapters/middlewares/loggers/errorHandler.js');
-const userAndAuthRouter = require('./routes/auth-user.router.js');
 const { logger } = require('./interface-adapters/middlewares/loggers/logger.js');
-const productRouter = require('./routes/product.routes.js');
 const createIndexFn = require('./interface-adapters/database-access/db-indexes.js');
-const blogRouter = require('./routes/blog.router.js');
 
 const app = express();
 
@@ -17,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 var cookieParser = require('cookie-parser');
 const corsOptions = require('./interface-adapters/middlewares/config/corsOptions.Js');
 
-// databae connetion call function
+// database connection call function
 dbconnection().then((db) => {
   console.log('database connected: ', db.databaseName);
   createIndexFn();
@@ -29,9 +26,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/users', userAndAuthRouter);
-app.use('/products', productRouter);
-app.use('/blogs', blogRouter);
+// Use the new single entry point for all routes
+const mainRouter = require('./routes');
+app.use('/', mainRouter);
 
 app.use('/', (_, res) => {
   res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
@@ -62,4 +59,11 @@ app.use((req, res, next) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`Server started on port http://localhost:${PORT}`));
+// Only call app.listen() if not in test
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
