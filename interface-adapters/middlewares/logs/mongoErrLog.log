@@ -140,3 +140,7 @@
 2025-07-23	07:17:30	f2e20017-1fcc-4bef-8464-7ee740310f5a	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined
 2025-07-23	07:18:38	3bde033b-bd88-4900-9e1d-b0f84551d1e3	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined
 2025-07-23	07:20:57	c84f4a6b-62e0-4395-8c9c-af7ca0783d06	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined
+2025-07-23	07:59:16	f0ff56f6-eed6-4803-951f-1d9e73d46a8a	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined
+2025-07-23	07:59:16	0666087b-89eb-4ea8-b8a0-3641017a5e10	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined
+2025-07-23	07:59:21	bdd774df-19cc-483a-b481-a229b2ebd91b	undefined:getaddrinfo ENOTFOUND mongo	undefined	undefined
+2025-07-23	10:50:06	95cbc275-1726-4998-9514-c4723cd5c5f2	undefined:connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017	undefined	undefined

@@ -383,12 +383,11 @@ const rateProductController = ({
       });
   };
 
-module.exports = () =>
-  Object.freeze({
-    createProductController,
-    findOneProductController,
-    findAllProductController,
-    deleteProductController,
-    updateProductController,
-    rateProductController,
-  });
+module.exports = {
+  createProductController,
+  findOneProductController,
+  findAllProductController,
+  deleteProductController,
+  updateProductController,
+  rateProductController,
+};

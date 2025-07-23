@@ -7,10 +7,50 @@ const { dbconnection } = require('./interface-adapters/database-access/db-connec
 const errorHandler = require('./interface-adapters/middlewares/loggers/errorHandler.js');
 const { logger } = require('./interface-adapters/middlewares/loggers/logger.js');
 const createIndexFn = require('./interface-adapters/database-access/db-indexes.js');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJSDoc = require('swagger-jsdoc');
+
+const PORT = process.env.PORT || 5000;
+
+const swaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'Clean Architecture REST API',
+    version: '1.0.0',
+    description: 'API documentation for the Clean Architecture Node.js REST API',
+    contact: {
+      name: 'Avom Brice',
+      email: 'bricefrkc@gmail.com',
+    },
+  },
+  servers: [
+    {
+      url: `http://localhost:${PORT}`,
+      description: 'Local server API documentation',
+    },
+  ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+    },
+  },
+  security: [{ bearerAuth: [] }],
+};
+
+const options = {
+  swaggerDefinition,
+  apis: [
+    './routes/*.js',
+  ],
+};
+const swaggerSpec = swaggerJSDoc(options);
 
 const app = express();
 
-const PORT = process.env.PORT || 5000;
 var cookieParser = require('cookie-parser');
 const corsOptions = require('./interface-adapters/middlewares/config/corsOptions.Js');
 
@@ -26,13 +66,19 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
+// Register Swagger UI BEFORE any static or catch-all routes
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Use the new single entry point for all routes
 const mainRouter = require('./routes');
-app.use('/', mainRouter);
 
-app.use('/', (_, res) => {
+// Only serve index.html for the root path
+app.get('/', (_, res) => {
   res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
 });
+
+app.use('/', mainRouter);
+
 
 //for no specified endpoint that is not found. this must after all the middlewares
 app.all('*', (req, res) => {
