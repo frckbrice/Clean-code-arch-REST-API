@@ -34,5 +34,3 @@ This file documents common issues and solutions encountered during the setup and
 - Make sure ports 5000 (app) and 27017 (MongoDB) are free or change them in `docker-compose.yml` and `.env`.
 
 ---
-
-Add more issues and solutions as you encounter them!
