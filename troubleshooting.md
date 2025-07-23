@@ -5,10 +5,12 @@
 ## 0. Express Downgrade & Docker Restart for Compatibility
 
 **Symptom:**
+
 - Swagger UI or other middleware fails with errors related to `path-to-regexp` or route registration after upgrading Express (e.g., Express v5 beta).
 - Docker Compose or MongoDB connection errors after system or Docker Desktop restart.
 
 **Solution:**
+
 - Downgrade Express to v4 (e.g., `npm install express@4` or `yarn add express@4`).
 - Stop Docker Desktop completely (kill all Docker processes if needed), then restart Docker Desktop and wait for it to be fully running.
 - Run `docker-compose up -d` to restart all services.
@@ -19,15 +21,18 @@
 ## 0.1. Swagger UI Not Working
 
 **Symptom:**
+
 - Navigating to `/api-docs` returns a 404, blank page, or error.
 - Swagger UI does not load or shows a path-to-regexp or route registration error.
 
 **Possible Causes:**
+
 - Swagger UI route is registered after a catch-all or error handler route in Express.
 - Express version incompatibility (v5 beta is not supported by swagger-ui-express).
 - Incorrect Swagger JSDoc configuration or missing comments.
 
 **Next Steps:**
+
 - Ensure `app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))` is registered before any catch-all or error handler middleware.
 - Confirm Express is v4, not v5.
 - Check for valid Swagger JSDoc comments above all route definitions.
