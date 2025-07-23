@@ -1,4 +1,5 @@
-const userControllerHandlers = require('./user-auth-controller');
+const userAuthControllers = require('./user-auth-controller');
+const userProfileControllers = require('./user-profile-controller');
 const userUseCaseHandlers = require('../../../application-business-rules/use-cases/user');
 
 const { makeHttpError } = require('../../validators-errors/http-error');
@@ -6,18 +7,17 @@ const { logEvents } = require('../../middlewares/loggers/logger');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../../adapter/email-sending');
-
 const { UniqueConstraintError, InvalidPropertyError } = require('../../validators-errors/errors');
 
-const registerUserControllerHandler = userControllerHandlers.registerUserController({
+// Auth Controllers
+const registerUserControllerHandler = userAuthControllers.registerUserController({
   registerUserUseCaseHandler: userUseCaseHandlers.registerUserUseCaseHandler,
   UniqueConstraintError,
   InvalidPropertyError,
   makeHttpError,
   logEvents,
 });
-
-const loginUserControllerHandler = userControllerHandlers.loginUserController({
+const loginUserControllerHandler = userAuthControllers.loginUserController({
   loginUserUseCaseHandler: userUseCaseHandlers.loginUserUseCaseHandler,
   UniqueConstraintError,
   InvalidPropertyError,
@@ -26,70 +26,20 @@ const loginUserControllerHandler = userControllerHandlers.loginUserController({
   bcrypt,
   jwt,
 });
-
-const deleteUserControllerHandler = userControllerHandlers.deleteUserController({
-  deleteUserUseCaseHandler: userUseCaseHandlers.deleteUserUseCaseHandler,
-  UniqueConstraintError,
-  InvalidPropertyError,
-  makeHttpError,
-  logEvents,
-});
-const findAllUsersControllerHandler = userControllerHandlers.findAllUsersController({
-  findAllUsersUseCaseHandler: userUseCaseHandlers.findAllUsersUseCaseHandler,
-  UniqueConstraintError,
-  InvalidPropertyError,
-  makeHttpError,
-  logEvents,
-});
-
-const findOneUserControllerHandler = userControllerHandlers.findOneUserController({
-  findOneUserUseCaseHandler: userUseCaseHandlers.findOneUserUseCaseHandler,
-  UniqueConstraintError,
-  InvalidPropertyError,
-  makeHttpError,
-  logEvents,
-});
-
-const updateUserControllerHandler = userControllerHandlers.updateUserController({
-  updateUserUseCaseHandler: userUseCaseHandlers.updateUserUseCaseHandler,
-  UniqueConstraintError,
-  InvalidPropertyError,
-  makeHttpError,
-  logEvents,
-});
-
-const logoutUserControllerHandler = userControllerHandlers.logoutUserController({
+const logoutUserControllerHandler = userAuthControllers.logoutUserController({
   logoutUseCaseHandler: userUseCaseHandlers.logoutUseCaseHandler,
   UniqueConstraintError,
   InvalidPropertyError,
   makeHttpError,
   logEvents,
 });
-
-const blockUserControllerHandler = userControllerHandlers.blockUserController({
-  blockUserUseCaseHandler: userUseCaseHandlers.blockUserUseCaseHandler,
-  UniqueConstraintError,
-  InvalidPropertyError,
-  makeHttpError,
-  logEvents,
-});
-
-const unBlockUserControllerHandler = userControllerHandlers.unBlockUserController({
-  unBlockUserUseCaseHandler: userUseCaseHandlers.unBlockUserUseCaseHandler,
-  UniqueConstraintError,
-  InvalidPropertyError,
-  makeHttpError,
-  logEvents,
-});
-
-const refreshTokenUserControllerHandler = userControllerHandlers.refreshTokenUserController({
+const refreshTokenUserControllerHandler = userAuthControllers.refreshTokenUserController({
   refreshTokenUseCaseHandler: userUseCaseHandlers.refreshTokenUseCaseHandler,
   makeHttpError,
   logEvents,
   jwt,
 });
-
-const forgotPasswordControllerHandler = userControllerHandlers.forgotPasswordController({
+const forgotPasswordControllerHandler = userAuthControllers.forgotPasswordController({
   forgotPasswordUseCaseHandler: userUseCaseHandlers.forgotPasswordUseCaseHandler,
   UniqueConstraintError,
   sendEmail,
@@ -97,8 +47,7 @@ const forgotPasswordControllerHandler = userControllerHandlers.forgotPasswordCon
   makeHttpError,
   logEvents,
 });
-
-const resetPasswordControllerHandler = userControllerHandlers.resetPasswordController({
+const resetPasswordControllerHandler = userAuthControllers.resetPasswordController({
   resetPasswordUseCaseHandler: userUseCaseHandlers.resetPasswordUseCaseHandler,
   UniqueConstraintError,
   InvalidPropertyError,
@@ -106,17 +55,51 @@ const resetPasswordControllerHandler = userControllerHandlers.resetPasswordContr
   logEvents,
 });
 
+// Profile Controllers
+const findAllUsersControllerHandler = userProfileControllers.findAllUsersController({
+  findAllUsersUseCaseHandler: userUseCaseHandlers.findAllUsersUseCaseHandler,
+  makeHttpError,
+  logEvents,
+});
+const findOneUserControllerHandler = userProfileControllers.findOneUserController({
+  findOneUserUseCaseHandler: userUseCaseHandlers.findOneUserUseCaseHandler,
+  makeHttpError,
+  logEvents,
+});
+const updateUserControllerHandler = userProfileControllers.updateUserController({
+  updateUserUseCaseHandler: userUseCaseHandlers.updateUserUseCaseHandler,
+  makeHttpError,
+  logEvents,
+});
+const deleteUserControllerHandler = userProfileControllers.deleteUserController({
+  deleteUserUseCaseHandler: userUseCaseHandlers.deleteUserUseCaseHandler,
+  makeHttpError,
+  logEvents,
+});
+const blockUserControllerHandler = userProfileControllers.blockUserController({
+  blockUserUseCaseHandler: userUseCaseHandlers.blockUserUseCaseHandler,
+  makeHttpError,
+  logEvents,
+});
+const unBlockUserControllerHandler = userProfileControllers.unBlockUserController({
+  unBlockUserUseCaseHandler: userUseCaseHandlers.unBlockUserUseCaseHandler,
+  makeHttpError,
+  logEvents,
+});
+
 module.exports = {
+  // Auth
   registerUserControllerHandler,
   loginUserControllerHandler,
-  deleteUserControllerHandler,
   logoutUserControllerHandler,
-  findAllUsersControllerHandler,
-  findOneUserControllerHandler,
   refreshTokenUserControllerHandler,
-  updateUserControllerHandler,
-  blockUserControllerHandler,
-  unBlockUserControllerHandler,
   forgotPasswordControllerHandler,
   resetPasswordControllerHandler,
+  // Profile
+  findAllUsersControllerHandler,
+  findOneUserControllerHandler,
+  updateUserControllerHandler,
+  deleteUserControllerHandler,
+  blockUserControllerHandler,
+  unBlockUserControllerHandler,
 };

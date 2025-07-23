@@ -35,10 +35,11 @@ const findAllBlogsController = ({ findAllBlogsUseCaseHandler, logEvents }) =>
   async function findAllBlogsControllerHandler(httpRequest) {
     try {
       const blogs = await findAllBlogsUseCaseHandler();
+      const safeBlogs = Array.isArray(blogs) ? blogs : (blogs ? [blogs] : []);
       return {
         headers: defaultHeaders,
         statusCode: 200,
-        data: { blogs },
+        data: { blogs: safeBlogs },
       };
     } catch (e) {
       logEvents && logEvents(e.message, 'blogController.log');

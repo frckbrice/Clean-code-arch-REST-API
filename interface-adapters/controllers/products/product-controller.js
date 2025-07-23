@@ -136,7 +136,7 @@ const findOneProductController = ({
           'Content-Type': 'application/json',
           'x-content-type-options': 'nosniff',
         },
-        statusCode: 201,
+        statusCode: 200,
         data: { product },
       };
     } catch (e) {
@@ -163,14 +163,24 @@ const findAllProductController = ({ dbProductHandler, findAllProductUseCaseHandl
       filterOptions,
     })
       .then((products) => {
-        // console.log("products from findAllProductController: ", products);
+        // Always return a flat array if possible
+        let safeProducts = [];
+        if (Array.isArray(products)) {
+          if (typeof products.flat === 'function') {
+            safeProducts = products.flat();
+          } else {
+            safeProducts = products;
+          }
+        } else if (products) {
+          safeProducts = [products];
+        }
         return {
           headers: {
             'Content-Type': 'application/json',
             'x-content-type-options': 'nosniff',
           },
-          statusCode: 201,
-          data: { products },
+          statusCode: 200,
+          data: { products: safeProducts },
         };
       })
       .catch((e) => {

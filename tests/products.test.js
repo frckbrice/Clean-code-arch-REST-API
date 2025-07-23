@@ -8,15 +8,17 @@ const app = express();
 app.use(express.json());
 app.use('/products', productRouter);
 
+process.env.MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017';
+
 beforeAll(async () => {
-  const client = await MongoClient.connect('mongodb://localhost:27017');
+  const client = await MongoClient.connect(process.env.MONGO_URI);
   const db = client.db('digital-market-place-updates');
   await db.collection('products').insertOne({ name: 'Test Product', price: 1 });
   await client.close();
 });
 
 afterAll(async () => {
-  const client = await MongoClient.connect('mongodb://localhost:27017');
+  const client = await MongoClient.connect(process.env.MONGO_URI);
   const db = client.db('digital-market-place-updates');
   await db.collection('products').deleteMany({});
   await client.close();
