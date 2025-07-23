@@ -10,7 +10,7 @@ module.exports = {
   dbconnection: async () => {
     // The MongoClient is the object that references the connection to our
     // datastore (Atlas, for example)
-    const client = new MongoClient(process.env.MONGODB_URI);
+    const client = new MongoClient(process.env.MONGO_URI);
 
     // The connect() method does not attempt a connection; instead it instructs
     // the driver to connect using the settings provided when a connection

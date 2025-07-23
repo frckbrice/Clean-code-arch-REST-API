@@ -54,8 +54,8 @@ const findAllProductsUseCase = () =>
   async function findAllProductUseCaseHandler({ dbProductHandler, filterOptions }) {
     try {
       const allProducts = await dbProductHandler.findAllProductsDbHandler(filterOptions);
-      // console.log("from find all products use case: ", allProducts);
-      return Object.freeze(allProducts);
+      // console.log('from find all products use case: ', allProducts);
+      return Object.freeze(allProducts.data);
     } catch (e) {
       console.log('Error from fetch all product handler: ', e);
       throw new Error(e.message);

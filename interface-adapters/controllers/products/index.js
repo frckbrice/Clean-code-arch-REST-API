@@ -1,28 +1,26 @@
-const { dbProductHandler } = require('../../database-access');
-
 const {
   createProductController,
-  deleteProductController,
-  updateProductController,
   findAllProductController,
   findOneProductController,
+  updateProductController,
+  deleteProductController,
   rateProductController,
   // findBestUserRaterController
-} = require('./product-controller')();
+} = require('./product-controller');
 
 const {
   createProductUseCaseHandler,
-  updateProductUseCaseHandler,
-  deleteProductUseCaseHandler,
   findAllProductUseCaseHandler,
   findOneProductUseCaseHandler,
+  updateProductUseCaseHandler,
+  deleteProductUseCaseHandler,
   rateProductUseCaseHandler,
-  // findBestUserRaterUseCaseHandler
 } = require('../../../application-business-rules/use-cases/products');
 const { makeHttpError } = require('../../validators-errors/http-error');
 
 const errorHandlers = require('../../validators-errors/errors');
 const { logEvents } = require('../../middlewares/loggers/logger');
+const { dbProductHandler } = require('../../database-access');
 
 const createProductControllerHandler = createProductController({
   createProductUseCaseHandler,
@@ -68,11 +66,9 @@ const rateProductControllerHandler = rateProductController({
 
 module.exports = {
   createProductControllerHandler,
-
-  updateProductControllerHandler,
-  deleteProductControllerHandler,
   findAllProductControllerHandler,
   findOneProductControllerHandler,
+  updateProductControllerHandler,
+  deleteProductControllerHandler,
   rateProductControllerHandler,
-  // findBestUserRaterControllerHandler
 };

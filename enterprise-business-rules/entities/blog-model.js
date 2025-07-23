@@ -1,5 +1,3 @@
-const blogValidation = require('../validate-models/blog-validation');
-
 module.exports = {
   makeBlogModel: ({ blogValidation, logEvents }) => {
     return async function makeBlog({ blogData }) {

@@ -1,5 +1,3 @@
-const { makeHttpError } = require('../../validators-errors/http-error');
-
 module.exports = {
   /**
    * Registers a new user using the provided user case handler.
@@ -26,10 +24,21 @@ module.exports = {
 
       try {
         const registeredUser = await registerUserUseCaseHandler(userInfo);
+        if (!registeredUser || registeredUser.errorMessage) {
+          return {
+            headers: { 'Content-Type': 'application/json' },
+            statusCode: 400,
+            data: {
+              success: false,
+              error:
+                registeredUser?.errorMessage ||
+                'User validation failed. Please check required fields.',
+              stack: registeredUser?.stack,
+            },
+          };
+        }
         return {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           statusCode: registeredUser.statusCode || 201,
           data: registeredUser.insertedId
             ? { message: 'User registered successfully' }
@@ -41,10 +50,11 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message || e.ReferenceError)}`,
           'controllerHandlerErr.log'
         );
-        return makeHttpError({
-          errorMessage: e.message,
-          statusCode: e.statusCode,
-        });
+        return {
+          headers: { 'Content-Type': 'application/json' },
+          statusCode: e.statusCode || 500,
+          data: { success: false, error: e.message, stack: e.stack },
+        };
       }
     };
   },
@@ -155,7 +165,11 @@ module.exports = {
         const newCookies = Object.entries(maxAge)
           .map(
             ([name, age]) =>
-              `${name}=${newAccessToken}; HttpOnly; Path=/; Max-Age=${age}; SameSite=none; Secure`
+              `${name}=${newAccessToken}; 
+            HttpOnly; 
+            Path=/; 
+            Max-Age=${age}; 
+            SameSite=none; Secure`
           )
           .join('; ');
 
@@ -512,7 +526,12 @@ module.exports = {
     },
 
   //reset password
-  resetPasswordController: ({ resetPasswordUseCaseHandler, UniqueConstraintError }) => {
+  resetPasswordController: ({
+    resetPasswordUseCaseHandler,
+    UniqueConstraintError,
+    makeHttpError,
+    logEvents,
+  }) => {
     return async function resetPasswordControllerHandler(httpRequest) {
       const { token } = httpRequest.params;
       const { password } = httpRequest.body;
@@ -534,6 +553,10 @@ module.exports = {
             : { message: 'resetPassword failed! hindly try again after some time' },
         };
       } catch (e) {
+        logEvents(
+          `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
+          'controllerHandlerErr.log'
+        );
         console.log('error from resetPasswordController controller handler: ', e);
         const statusCode = e instanceof UniqueConstraintError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });

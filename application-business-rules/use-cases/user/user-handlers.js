@@ -229,7 +229,7 @@ module.exports = {
    * @throws {RequiredParameterError} If the ID is not provided.
    * @throws {new Error} If the user is not found.
    */
-  deleteUserUseCase: ({ dbUserHandler, validateId, RequiredParameterError, logEvents }) => {
+  deleteUserUseCase: ({ dbUserHandler, validateId, logEvents }) => {
     return async function deleteUserUseCaseHandler({ userId }) {
       const newId = validateId(userId);
       try {
@@ -268,7 +268,7 @@ module.exports = {
    * @throws {new Error} If the user is not found.
    * @throws {Error} If there is an error refreshing the token.
    */
-  refreshTokenUseCase: ({ dbUserHandler, RequiredParameterError, logEvents }) => {
+  refreshTokenUseCase: ({ dbUserHandler, logEvents }) => {
     return async function refreshTokenUseCaseHandler({ refreshToken, jwt }) {
       try {
         console.log(`refreshToken: ${refreshToken}`);
@@ -316,7 +316,7 @@ module.exports = {
    * @param {string} refreshToken - The refresh token to be used for logout.
    * @return {Object} An object containing the access token and refresh token.
    */
-  logoutUseCase: ({ RequiredParameterError, logEvents }) => {
+  logoutUseCase: ({ logEvents }) => {
     return async function logoutUseCaseHandler({ refreshToken }) {
       try {
         if (!refreshToken) {
@@ -334,7 +334,7 @@ module.exports = {
   },
 
   //block user
-  blockUserUseCase: ({ dbUserHandler, validateId, RequiredParameterError, logEvents }) => {
+  blockUserUseCase: ({ dbUserHandler, validateId, logEvents }) => {
     return async function blockUserUseCaseHandler({ userId }) {
       const newId = validateId(userId);
 
@@ -363,7 +363,7 @@ module.exports = {
   },
 
   //un-block user
-  unBlockUserUseCase: ({ dbUserHandler, validateId, RequiredParameterError, logEvents }) => {
+  unBlockUserUseCase: ({ dbUserHandler, validateId, logEvents }) => {
     return async function unBlockUserUseCaseHandler({ userId }) {
       const newId = validateId(userId);
 

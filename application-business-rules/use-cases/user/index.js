@@ -1,4 +1,5 @@
-const userUseCases = require('./user-handlers');
+const authUseCases = require('./user-auth-usecases');
+const profileUseCases = require('./user-profile-usecases');
 const { dbUserHandler } = require('../../../interface-adapters/database-access');
 const { makeUser, validateId } = require('../../../enterprise-business-rules/entities');
 const { RequiredParameterError } = require('../../../interface-adapters/validators-errors/errors');
@@ -7,35 +8,45 @@ const { makeHttpError } = require('../../../interface-adapters/validators-errors
 
 const entityModels = require('../../../enterprise-business-rules/entities');
 
-const registerUserUseCaseHandler = userUseCases.registerUserUseCase({
+// Auth Use Cases
+const registerUserUseCaseHandler = authUseCases.registerUserUseCase({
   dbUserHandler,
   entityModels,
   logEvents,
   makeHttpError,
 });
-
-const loginUserUseCaseHandler = userUseCases.loginUserUseCase({
+const loginUserUseCaseHandler = authUseCases.loginUserUseCase({
+  dbUserHandler,
+  logEvents,
+  makeHttpError,
+});
+const logoutUseCaseHandler = authUseCases.logoutUseCase({ RequiredParameterError, logEvents });
+const refreshTokenUseCaseHandler = authUseCases.refreshTokenUseCase({
+  dbUserHandler,
+  RequiredParameterError,
+  logEvents,
+});
+const forgotPasswordUseCaseHandler = authUseCases.forgotPasswordUseCase({
+  dbUserHandler,
+  logEvents,
+});
+const resetPasswordUseCaseHandler = authUseCases.resetPasswordUseCase({
   dbUserHandler,
   logEvents,
   makeHttpError,
 });
 
-const findOneUserUseCaseHandler = userUseCases.findOneUserUseCase({
+// Profile Use Cases
+const findAllUsersUseCaseHandler = profileUseCases.findAllUsersUseCase({
+  dbUserHandler,
+  logEvents,
+});
+const findOneUserUseCaseHandler = profileUseCases.findOneUserUseCase({
   dbUserHandler,
   validateId,
   logEvents,
 });
-
-const findAllUsersUseCaseHandler = userUseCases.findAllUsersUseCase({ dbUserHandler, logEvents });
-const logoutUseCaseHandler = userUseCases.logoutUseCase({ RequiredParameterError, logEvents });
-
-const refreshTokenUseCaseHandler = userUseCases.refreshTokenUseCase({
-  dbUserHandler,
-  RequiredParameterError,
-  logEvents,
-});
-
-const updateUserUseCaseHandler = userUseCases.updateUserUseCase({
+const updateUserUseCaseHandler = profileUseCases.updateUserUseCase({
   dbUserHandler,
   makeUser,
   validateId,
@@ -43,50 +54,38 @@ const updateUserUseCaseHandler = userUseCases.updateUserUseCase({
   logEvents,
   makeHttpError,
 });
-
-const deleteUserUseCaseHandler = userUseCases.deleteUserUseCase({
+const deleteUserUseCaseHandler = profileUseCases.deleteUserUseCase({
   dbUserHandler,
   validateId,
   RequiredParameterError,
   logEvents,
 });
-
-const blockUserUseCaseHandler = userUseCases.blockUserUseCase({
+const blockUserUseCaseHandler = profileUseCases.blockUserUseCase({
   dbUserHandler,
   validateId,
   RequiredParameterError,
   logEvents,
 });
-
-const unBlockUserUseCaseHandler = userUseCases.unBlockUserUseCase({
+const unBlockUserUseCaseHandler = profileUseCases.unBlockUserUseCase({
   dbUserHandler,
   validateId,
   RequiredParameterError,
   logEvents,
-});
-
-const forgotPasswordUseCaseHandler = userUseCases.forgotPasswordUseCase({
-  dbUserHandler,
-  logEvents,
-});
-
-const resetPasswordUseCaseHandler = userUseCases.resetPasswordUseCase({
-  dbUserHandler,
-  logEvents,
-  makeHttpError,
 });
 
 module.exports = {
+  // Auth
+  registerUserUseCaseHandler,
   loginUserUseCaseHandler,
   logoutUseCaseHandler,
   refreshTokenUseCaseHandler,
-  updateUserUseCaseHandler,
-  deleteUserUseCaseHandler,
-  findAllUsersUseCaseHandler,
-  findOneUserUseCaseHandler,
-  registerUserUseCaseHandler,
-  blockUserUseCaseHandler,
-  unBlockUserUseCaseHandler,
   forgotPasswordUseCaseHandler,
   resetPasswordUseCaseHandler,
+  // Profile
+  findAllUsersUseCaseHandler,
+  findOneUserUseCaseHandler,
+  updateUserUseCaseHandler,
+  deleteUserUseCaseHandler,
+  blockUserUseCaseHandler,
+  unBlockUserUseCaseHandler,
 };
