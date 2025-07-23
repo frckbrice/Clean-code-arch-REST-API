@@ -135,28 +135,6 @@ const findAllProducts = async ({ dbconnection, logEvents, ...filterOptions }) =>
   }
 };
 
-// update existing product
-const updateProduct = async ({ productId, productData, dbconnection, logEvents }) => {
-  const db = await dbconnection();
-  try {
-    const updatedProduct = await db
-      .collection('products')
-      .findOneAndUpdate(
-        { _id: new ObjectId(productId) },
-        { $set: { ...productData } },
-        { returnOriginal: false }
-      );
-    return updatedProduct.value;
-  } catch (error) {
-    console.log('Error from product DB handler: ', error);
-    logEvents(
-      `${error.no}:${error.code}\t${error.ReferenceError || error.TypeError}\t${error.message}`,
-      'product.log'
-    );
-    return null;
-  }
-};
-
 // delete product from DB
 const deleteProduct = async ({ productId, dbconnection, logEvents }) => {
   const db = await dbconnection();

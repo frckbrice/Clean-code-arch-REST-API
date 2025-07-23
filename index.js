@@ -16,7 +16,7 @@ const corsOptions = require('./interface-adapters/middlewares/config/corsOptions
 
 // database connection call function
 dbconnection().then((db) => {
-  console.log("database connected: ", db.databaseName);
+  console.log('database connected: ', db.databaseName);
   createIndexFn();
 });
 
@@ -30,19 +30,19 @@ app.use(express.urlencoded({ extended: false }));
 const mainRouter = require('./routes');
 app.use('/', mainRouter);
 
-app.use("/", (_, res) => {
-  res.sendFile(path.join(__dirname, "public", "views", "index.html"));
+app.use('/', (_, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
 });
 
 //for no specified endpoint that is not found. this must after all the middlewares
-app.all("*", (req, res) => {
+app.all('*', (req, res) => {
   res.status(404);
-  if (req.accepts("html")) {
-    res.sendFile(path.join(__dirname, "public", "views", "404.html"));
-  } else if (req.accepts("json")) {
-    res.json({ msg: "404 Not Found" });
+  if (req.accepts('html')) {
+    res.sendFile(path.join(__dirname, 'public', 'views', '404.html'));
+  } else if (req.accepts('json')) {
+    res.json({ msg: '404 Not Found' });
   } else {
-    res.type("txt").send("404 Not Found");
+    res.type('txt').send('404 Not Found');
   }
 });
 
@@ -59,6 +59,11 @@ app.use((req, res, next) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`Server started on port http://localhost:${PORT}`));
+// Only call app.listen() if not in test
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
 
 module.exports = app;

@@ -13,4 +13,4 @@ router.use('/products', productRouter);
 router.use('/blogs', blogRouter);
 // router.use('/ratings', ratingRouter);
 
-module.exports = router; 
+module.exports = router;

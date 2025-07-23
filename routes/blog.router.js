@@ -15,7 +15,9 @@ const {
 // GET /blogs - Get all blogs (public)
 router
   .route('/')
-  .post(authVerifyJwt, async (req, res) => requestResponseAdapter(createBlogControllerHandler)(req, res))
+  .post(authVerifyJwt, async (req, res) =>
+    requestResponseAdapter(createBlogControllerHandler)(req, res)
+  )
   .get(async (req, res) => requestResponseAdapter(findAllBlogsControllerHandler)(req, res));
 
 // GET /blogs/:blogId - Get one blog (public)
@@ -24,8 +26,12 @@ router
 router
   .route('/:blogId')
   .get(async (req, res) => requestResponseAdapter(findOneBlogControllerHandler)(req, res))
-  .put(authVerifyJwt, async (req, res) => requestResponseAdapter(updateBlogControllerHandler)(req, res))
-  .delete(authVerifyJwt, isAdmin, async (req, res) => requestResponseAdapter(deleteBlogControllerHandler)(req, res));
+  .put(authVerifyJwt, async (req, res) =>
+    requestResponseAdapter(updateBlogControllerHandler)(req, res)
+  )
+  .delete(authVerifyJwt, isAdmin, async (req, res) =>
+    requestResponseAdapter(deleteBlogControllerHandler)(req, res)
+  );
 
 // in this case: it is a desgin decision to let the route be public and limited to authenticated users
 //  You can further restrict creation and update to admins only by adding isAdmin middleware.
