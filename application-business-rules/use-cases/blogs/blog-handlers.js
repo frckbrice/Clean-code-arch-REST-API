@@ -1,6 +1,6 @@
 // Blog use cases (Clean Architecture)
 module.exports = {
-  createBlogUseCase: ({ dbBlogHandler, makeBlogModel, logEvents, errorHandlers }) =>
+  createBlogUseCase: ({ dbBlogHandler, makeBlogModel, logEvents }) =>
     async function createBlogUseCaseHandler(blogData) {
       try {
         const validatedBlog = await makeBlogModel({ blogData });
@@ -36,7 +36,7 @@ module.exports = {
       }
     },
 
-  updateBlogUseCase: ({ dbBlogHandler, makeBlogModel, logEvents, errorHandlers }) =>
+  updateBlogUseCase: ({ dbBlogHandler, makeBlogModel, logEvents }) =>
     async function updateBlogUseCaseHandler({ blogId, updateData }) {
       try {
         const existingBlog = await dbBlogHandler.findOneBlog({ blogId });

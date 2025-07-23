@@ -1,8 +1,5 @@
-
 module.exports = {
-    findAllUsersController: ({
-        findAllUsersUseCaseHandler,
-        makeHttpError, logEvents }) => {
+    findAllUsersController: ({ findAllUsersUseCaseHandler, makeHttpError, logEvents }) => {
         return async function findAllUsersControllerHandler() {
             try {
                 const users = await findAllUsersUseCaseHandler();
@@ -12,12 +9,15 @@ module.exports = {
                     data: JSON.stringify(users),
                 };
             } catch (e) {
-                logEvents(`${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`, 'controllerHandlerErr.log');
+                logEvents(
+                    `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
+                    'controllerHandlerErr.log'
+                );
                 return makeHttpError({ errorMessage: e.message, statusCode: 500 });
             }
         };
     },
-    findOneUserController: ({ findOneUserUseCaseHandler, UniqueConstraintError, InvalidPropertyError, makeHttpError, logEvents }) => {
+    findOneUserController: ({ findOneUserUseCaseHandler, makeHttpError, logEvents }) => {
         return async function findOneUserControllerHandler(httpRequest) {
             const { userId } = httpRequest.params;
             if (!userId) {
@@ -31,7 +31,10 @@ module.exports = {
                     data: JSON.stringify(user),
                 };
             } catch (e) {
-                logEvents(`${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`, 'controllerHandlerErr.log');
+                logEvents(
+                    `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
+                    'controllerHandlerErr.log'
+                );
                 return makeHttpError({ errorMessage: e.message, statusCode: 500 });
             }
         };
@@ -51,7 +54,10 @@ module.exports = {
                     data: JSON.stringify(updatedUser),
                 };
             } catch (e) {
-                logEvents(`${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`, 'controllerHandlerErr.log');
+                logEvents(
+                    `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
+                    'controllerHandlerErr.log'
+                );
                 return makeHttpError({ errorMessage: e.message, statusCode: 500 });
             }
         };
@@ -70,7 +76,10 @@ module.exports = {
                     data: JSON.stringify(deletedUser),
                 };
             } catch (e) {
-                logEvents(`${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`, 'controllerHandlerErr.log');
+                logEvents(
+                    `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
+                    'controllerHandlerErr.log'
+                );
                 return makeHttpError({ errorMessage: e.message, statusCode: 500 });
             }
         };
@@ -89,7 +98,10 @@ module.exports = {
                     data: JSON.stringify({ message: 'user blocked successfully', blockedUser }),
                 };
             } catch (e) {
-                logEvents(`${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`, 'controllerHandlerErr.log');
+                logEvents(
+                    `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
+                    'controllerHandlerErr.log'
+                );
                 return makeHttpError({ errorMessage: e.message, statusCode: 500 });
             }
         },
@@ -107,8 +119,11 @@ module.exports = {
                     data: JSON.stringify({ message: 'user unblocked successfully', unBlockedUser }),
                 };
             } catch (e) {
-                logEvents(`${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`, 'controllerHandlerErr.log');
+                logEvents(
+                    `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
+                    'controllerHandlerErr.log'
+                );
                 return makeHttpError({ errorMessage: e.message, statusCode: 500 });
             }
         },
-}; 
+};

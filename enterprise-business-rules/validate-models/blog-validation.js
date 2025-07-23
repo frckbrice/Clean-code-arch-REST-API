@@ -1,6 +1,6 @@
 const productValidation = require('./product-validation-fcts')();
 
-const { validateDescription, validateTitle, validateObjectId } = productValidation;
+const { validateDescription, validateTitle } = productValidation;
 
 //validate cover image for only more optimized types
 const validateCoverImage = ({ cover_image, InvalidPropertyError }) => {

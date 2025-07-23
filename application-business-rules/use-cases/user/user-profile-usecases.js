@@ -5,4 +5,4 @@ module.exports = {
   deleteUserUseCase: require('./user-handlers').deleteUserUseCase,
   blockUserUseCase: require('./user-handlers').blockUserUseCase,
   unBlockUserUseCase: require('./user-handlers').unBlockUserUseCase,
-}; 
+};

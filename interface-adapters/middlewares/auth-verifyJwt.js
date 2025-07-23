@@ -71,8 +71,7 @@ const isAdmin = (req, res, next) => {
  */
 const isBlocked = (req, res, next) => {
   const { isBlocked } = req.user;
-  if (isBlocked)
-    return res.status(403).send('ACCESS_DENIED. USER_BLOCKED');
+  if (isBlocked) return res.status(403).send('ACCESS_DENIED. USER_BLOCKED');
   next();
 };
 

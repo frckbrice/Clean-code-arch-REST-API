@@ -4,7 +4,7 @@ const defaultHeaders = {
   'x-content-type-options': 'nosniff',
 };
 
-const createBlogController = ({ createBlogUseCaseHandler, errorHandlers, logEvents }) =>
+const createBlogController = ({ createBlogUseCaseHandler, logEvents }) =>
   async function createBlogControllerHandler(httpRequest) {
     const { body } = httpRequest;
     if (!body || Object.keys(body).length === 0) {
@@ -32,10 +32,10 @@ const createBlogController = ({ createBlogUseCaseHandler, errorHandlers, logEven
   };
 
 const findAllBlogsController = ({ findAllBlogsUseCaseHandler, logEvents }) =>
-  async function findAllBlogsControllerHandler(httpRequest) {
+  async function findAllBlogsControllerHandler() {
     try {
       const blogs = await findAllBlogsUseCaseHandler();
-      const safeBlogs = Array.isArray(blogs) ? blogs : (blogs ? [blogs] : []);
+      const safeBlogs = Array.isArray(blogs) ? blogs : blogs ? [blogs] : [];
       return {
         headers: defaultHeaders,
         statusCode: 200,

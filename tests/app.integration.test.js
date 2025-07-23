@@ -4,27 +4,41 @@ const jwt = require('jsonwebtoken');
 const app = require('../index'); //
 
 // Helper to generate a JWT for testing
-function generateJwt(user = { id: 'u1', email: 'user@example.com', roles: ['user'], isBlocked: false }) {
+function generateJwt(
+  user = { id: 'u1', email: 'user@example.com', roles: ['user'], isBlocked: false }
+) {
   return jwt.sign(user, process.env.JWT_SECRET || 'testsecret', { expiresIn: '1h' });
 }
 
 describe('Integration: User, Product, Blog Endpoints', () => {
   let userToken, adminToken, createdProductId;
   beforeAll(() => {
-    userToken = generateJwt({ id: 'u1', email: 'user@example.com', roles: ['user'], isBlocked: false });
-    adminToken = generateJwt({ id: 'admin1', email: 'admin@example.com', roles: ['admin'], isBlocked: false });
+    userToken = generateJwt({
+      id: 'u1',
+      email: 'user@example.com',
+      roles: ['user'],
+      isBlocked: false,
+    });
+    adminToken = generateJwt({
+      id: 'admin1',
+      email: 'admin@example.com',
+      roles: ['admin'],
+      isBlocked: false,
+    });
   });
 
   it('should register a new user', async () => {
     const uniqueEmail = `int_${Date.now()}@example.com`;
-    const res = await request(app).post('/auth/register').send({
-      username: 'integrationUser',
-      email: uniqueEmail,
-      password: 'pass1234',
-      firstName: 'Integration',
-      lastName: 'User',
-      roles: ['user'],
-    });
+    const res = await request(app)
+      .post('/auth/register')
+      .send({
+        username: 'integrationUser',
+        email: uniqueEmail,
+        password: 'pass1234',
+        firstName: 'Integration',
+        lastName: 'User',
+        roles: ['user'],
+      });
     expect([200, 201]).toContain(res.statusCode);
     expect(res.body).toMatchObject({ message: 'User registered successfully' });
   });
@@ -65,7 +79,9 @@ describe('Integration: User, Product, Blog Endpoints', () => {
     expect([200, 201]).toContain(res.statusCode);
     if (!res.body || !Array.isArray(res.body.products)) {
       console.error('Product list response:', res.body);
-      throw new Error('Expected res.body.products to be an array, got: ' + JSON.stringify(res.body));
+      throw new Error(
+        'Expected res.body.products to be an array, got: ' + JSON.stringify(res.body)
+      );
     }
     expect(Array.isArray(res.body.products)).toBe(true);
     expect(res.body.products.length).toBeGreaterThanOrEqual(0);
@@ -119,8 +135,7 @@ describe('Integration: User, Product, Blog Endpoints', () => {
   it('should not delete a product without auth', async () => {
     if (!createdProductId) return;
     // Without JWT (should fail with 401 or 403)
-    const res = await request(app)
-      .delete(`/products/${createdProductId}`);
+    const res = await request(app).delete(`/products/${createdProductId}`);
     expect([401, 403]).toContain(res.statusCode);
   });
 

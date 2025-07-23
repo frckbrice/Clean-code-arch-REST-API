@@ -28,7 +28,13 @@ module.exports = {
           return {
             headers: { 'Content-Type': 'application/json' },
             statusCode: 400,
-            data: { success: false, error: registeredUser?.errorMessage || 'User validation failed. Please check required fields.', stack: registeredUser?.stack },
+            data: {
+              success: false,
+              error:
+                registeredUser?.errorMessage ||
+                'User validation failed. Please check required fields.',
+              stack: registeredUser?.stack,
+            },
           };
         }
         return {
@@ -520,7 +526,12 @@ module.exports = {
     },
 
   //reset password
-  resetPasswordController: ({ resetPasswordUseCaseHandler, UniqueConstraintError }) => {
+  resetPasswordController: ({
+    resetPasswordUseCaseHandler,
+    UniqueConstraintError,
+    makeHttpError,
+    logEvents,
+  }) => {
     return async function resetPasswordControllerHandler(httpRequest) {
       const { token } = httpRequest.params;
       const { password } = httpRequest.body;
@@ -542,6 +553,10 @@ module.exports = {
             : { message: 'resetPassword failed! hindly try again after some time' },
         };
       } catch (e) {
+        logEvents(
+          `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
+          'controllerHandlerErr.log'
+        );
         console.log('error from resetPasswordController controller handler: ', e);
         const statusCode = e instanceof UniqueConstraintError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
