@@ -1,3 +1,5 @@
+'use strict';
+
 const {
   createProductController,
   findAllProductController,
@@ -5,7 +7,6 @@ const {
   updateProductController,
   deleteProductController,
   rateProductController,
-  // findBestUserRaterController
 } = require('./product-controller');
 
 const {
@@ -61,8 +62,6 @@ const rateProductControllerHandler = rateProductController({
   logEvents,
   errorHandlers,
 });
-// const findProductRatingControllerHandler = findProductRatingController({ dbProductHandler, findProductRatingUseCaseHandler, errorHandlers });
-// const findBestUserRaterControllerHandler = findBestUserRaterController({ dbProductHandler, findBestUserRaterUseCaseHandler, errorHandlers });
 
 module.exports = {
   createProductControllerHandler,

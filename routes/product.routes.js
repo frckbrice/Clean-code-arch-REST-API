@@ -47,6 +47,16 @@
  *         - description
  *         - category
  *         - createdBy
+ *     RatingInput:
+ *       type: object
+ *       required:
+ *         - ratingValue
+ *       properties:
+ *         ratingValue:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 5
+ *           description: Rating from 1 to 5
  */
 
 const router = require('express').Router();
@@ -86,8 +96,16 @@ const {
  *               $ref: '#/components/schemas/Product'
  *       400:
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *   get:
  *     summary: Get all products
  *     tags: [Products]
@@ -129,6 +147,10 @@ router
  *               $ref: '#/components/schemas/Product'
  *       404:
  *         description: Product not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *   put:
  *     summary: Update a product
  *     tags: [Products]
@@ -155,10 +177,22 @@ router
  *               $ref: '#/components/schemas/Product'
  *       400:
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Product not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *   delete:
  *     summary: Delete a product
  *     tags: [Products]
@@ -175,10 +209,22 @@ router
  *         description: Product deleted
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       403:
  *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Product not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router
   .route('/:productId')
@@ -214,17 +260,31 @@ router
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               ratingValue:
- *                 type: number
+ *             $ref: '#/components/schemas/RatingInput'
  *     responses:
  *       201:
  *         description: Product rated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 productId:
+ *                   type: string
  *       400:
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router
   .route('/:productId/:userId/rating')

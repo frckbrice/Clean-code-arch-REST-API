@@ -26,14 +26,28 @@ const {
  *         _id:
  *           type: string
  *           description: The user ID
+ *         id:
+ *           type: string
+ *           description: Alias for _id
  *         username:
  *           type: string
  *         email:
  *           type: string
+ *         firstName:
+ *           type: string
+ *         lastName:
+ *           type: string
  *         role:
  *           type: string
+ *         roles:
+ *           type: array
+ *           items:
+ *             type: string
  *         isBlocked:
  *           type: boolean
+ *         createdAt:
+ *           type: string
+ *           format: date-time
  *       required:
  *         - username
  *         - email
@@ -76,8 +90,16 @@ const {
  *               $ref: '#/components/schemas/User'
  *       400:
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.put('/profile', authVerifyJwt, async (req, res) =>
   makeResponseCallback(updateUserControllerHandler)(req, res)
@@ -102,8 +124,16 @@ router.put('/profile', authVerifyJwt, async (req, res) =>
  *                 $ref: '#/components/schemas/User'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       403:
  *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get('/', authVerifyJwt, isAdmin, async (req, res) =>
   makeResponseCallback(findAllUsersControllerHandler)(req, res)
@@ -132,8 +162,16 @@ router.get('/', authVerifyJwt, isAdmin, async (req, res) =>
  *               $ref: '#/components/schemas/User'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *   delete:
  *     summary: Delete user (admin only)
  *     tags: [Users]
@@ -150,10 +188,22 @@ router.get('/', authVerifyJwt, isAdmin, async (req, res) =>
  *         description: User deleted
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       403:
  *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get('/:userId', authVerifyJwt, async (req, res) =>
   makeResponseCallback(findOneUserControllerHandler)(req, res)
@@ -181,10 +231,22 @@ router.delete('/:userId', authVerifyJwt, isAdmin, async (req, res) =>
  *         description: User blocked
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       403:
  *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/block-user/:userId', authVerifyJwt, isAdmin, async (req, res) =>
   makeResponseCallback(blockUserControllerHandler)(req, res)
@@ -209,10 +271,22 @@ router.post('/block-user/:userId', authVerifyJwt, isAdmin, async (req, res) =>
  *         description: User unblocked
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       403:
  *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/unblock-user/:userId', authVerifyJwt, isAdmin, async (req, res) =>
   makeResponseCallback(unBlockUserControllerHandler)(req, res)

@@ -1,3 +1,7 @@
+'use strict';
+
+const { log } = require('../../middlewares/loggers/logger');
+
 module.exports = {
   /**
    * Registers a new user using the provided user case handler.
@@ -45,7 +49,7 @@ module.exports = {
             : registeredUser,
         };
       } catch (e) {
-        console.error('error from register controller: ', e);
+        log.error('error from register controller:', e.message);
         logEvents(
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message || e.ReferenceError)}`,
           'controllerHandlerErr.log'
@@ -117,7 +121,7 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from loginUserController controller handler: ', e);
+        log.error('error from loginUserController:', e.message);
         const statusCode =
           e instanceof UniqueConstraintError || e instanceof InvalidPropertyError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
@@ -152,7 +156,7 @@ module.exports = {
       }
       try {
         const newAccessToken = await refreshTokenUseCaseHandler({ refreshToken, jwt });
-        console.log('from refresh token controller handler: ', newAccessToken);
+        log.debug('refresh token controller: new access token issued');
 
         const maxAge = {
           accessToken: process.env.JWT_REFRESH_EXPIRES_IN,
@@ -187,7 +191,7 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from refresh token controller handler: ', e);
+        log.error('error from refresh token controller:', e.message);
         const statusCode =
           e instanceof UniqueConstraintError || e instanceof InvalidPropertyError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
@@ -253,7 +257,7 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from logoutUserController controller handler: ', e);
+        log.error('error from logoutUserController:', e.message);
         const statusCode =
           e instanceof UniqueConstraintError || e instanceof InvalidPropertyError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
@@ -290,7 +294,7 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from deleteUserController controller handler: ', e);
+        log.error('error from deleteUserController:', e.message);
         const statusCode =
           e instanceof UniqueConstraintError || e instanceof InvalidPropertyError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
@@ -328,7 +332,7 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from updateUserController controller handler: ', e);
+        log.error('error from updateUserController:', e.message);
         const statusCode =
           e instanceof UniqueConstraintError || e instanceof InvalidPropertyError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
@@ -365,7 +369,7 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from findOneUserController controller handler: ', e);
+        log.error('error from findOneUserController:', e.message);
         const statusCode =
           e instanceof UniqueConstraintError || e instanceof InvalidPropertyError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
@@ -400,7 +404,7 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from findAllUsersController controller handler: ', e);
+        log.error('error from findAllUsersController:', e.message);
         const statusCode =
           e instanceof UniqueConstraintError || e instanceof InvalidPropertyError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
@@ -426,7 +430,7 @@ module.exports = {
       }
       try {
         const blockedUser = await blockUserUseCaseHandler({ userId });
-        console.log(' from blockUserController controller handler: ', blockedUser);
+        log.debug('blockUserController: user blocked');
         return {
           headers: {
             'Content-Type': 'application/json',
@@ -439,7 +443,7 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from blockUserController controller handler: ', e);
+        log.error('error from blockUserController:', e.message);
         const statusCode =
           e instanceof UniqueConstraintError || e instanceof InvalidPropertyError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
@@ -463,8 +467,8 @@ module.exports = {
         });
       }
       try {
-        const unBlockedUser = await unBlockUserUseCaseHandler({ userId });
-        console.log(' from unBlockUserController controller handler: ', unBlockedUser);
+        await unBlockUserUseCaseHandler({ userId });
+        log.debug('unBlockUserController: user unblocked');
         return {
           headers: {
             'Content-Type': 'application/json',
@@ -477,7 +481,7 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from unBlockUserController controller handler: ', e);
+        log.error('error from unBlockUserController:', e.message);
         const statusCode =
           e instanceof UniqueConstraintError || e instanceof InvalidPropertyError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
@@ -520,7 +524,7 @@ module.exports = {
             `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
             'controllerHandlerErr.log'
           );
-          console.log('error from forgotPasswordController controller handler: ', e);
+          log.error('error from forgotPasswordController:', e.message);
           return makeHttpError({ errorMessage: e.message, statusCode: e.statusCode });
         });
     },
@@ -557,7 +561,7 @@ module.exports = {
           `${('No:', e.no)}:${('code: ', e.code)}\t${('name: ', e.name)}\t${('message:', e.message)}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from resetPasswordController controller handler: ', e);
+        log.error('error from resetPasswordController:', e.message);
         const statusCode = e instanceof UniqueConstraintError ? 400 : 500;
         return makeHttpError({ errorMessage: e.message, statusCode });
       }

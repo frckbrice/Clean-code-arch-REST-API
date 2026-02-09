@@ -68,7 +68,6 @@ const blogPostValidation = ({ blogPostData, errorHandlers }) => {
   resultingBlogPostData.created_at = new Date().toISOString();
   resultingBlogPostData.lastModifiedDate = null;
 
-  console.log('successfully validated blog post: ');
   return resultingBlogPostData;
 };
 module.exports = Object.freeze({

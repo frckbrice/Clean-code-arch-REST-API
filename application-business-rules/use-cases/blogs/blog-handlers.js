@@ -16,7 +16,6 @@ module.exports = {
     async function findAllBlogsUseCaseHandler() {
       try {
         const blogs = await dbBlogHandler.findAllBlogs();
-        // console.log('\n\n from find all blogs use case: ', blogs);
         return Object.freeze(blogs.flat().data);
       } catch (error) {
         logEvents && logEvents(error.message, 'blogUseCase.log');

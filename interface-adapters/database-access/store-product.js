@@ -1,18 +1,23 @@
-//create a product with color enumeration, categoryas reference to categories
-//collection, rating as an array of objects with reference to ratings collection, also a brand enumeration
+'use strict';
 
 const { ObjectId, DBRef } = require('mongodb');
-const { logEvents } = require('../middlewares/loggers/logger');
 const MongoClient = require('mongodb').MongoClient;
+const { log } = require('../middlewares/loggers/logger');
 
+/**
+ * Inserts a new product into the products collection.
+ * @param {Object} productData - Product document.
+ * @param {Function} dbconnection - Async function returning DB instance.
+ * @param {Function} logEvents - Logger for file output.
+ * @returns {Promise<import('mongodb').InsertOneResult|null>}
+ */
 async function createProduct(productData, dbconnection, logEvents) {
-  console.log('from createProduct DB handler');
   const db = await dbconnection();
   try {
     const newProduct = await db.collection('products').insertOne({ ...productData });
     return newProduct;
   } catch (error) {
-    console.log('Error from product DB handler: ', error);
+    log.error('Error from product DB handler:', error.message);
     logEvents(
       `${error.no}:${error.code}\t${error.ReferenceError || error.TypeError}\t${error.message}`,
       'product.log'
@@ -20,8 +25,12 @@ async function createProduct(productData, dbconnection, logEvents) {
   }
 }
 
-// find one product from DB
-const findOneProduct = async ({ productId, dbconnection }) => {
+/**
+ * Finds a single product by ID.
+ * @param {{ productId: string, dbconnection: Function, logEvents: Function }} opts
+ * @returns {Promise<Object|null>}
+ */
+const findOneProduct = async ({ productId, dbconnection, logEvents }) => {
   const db = await dbconnection();
   try {
     const product = await db.collection('products').findOne(
@@ -51,20 +60,15 @@ const findOneProduct = async ({ productId, dbconnection }) => {
       }
     );
     if (!product) {
-      console.log('No product found');
       return null;
     }
 
     const { _id, ...rest } = product;
     const id = _id.toString();
-    const isDeleted = delete product._id;
-
-    if (isDeleted) {
-      return { id, ...rest };
-    }
-    // return rest;
+    delete rest._id;
+    return { id, ...rest };
   } catch (error) {
-    console.log('Error from product DB handler: ', error);
+    log.error('Error from product DB handler:', error.message);
     logEvents(
       `${error.no}:${error.code}\t${error.ReferenceError || error.TypeError}\t${error.message}`,
       'product.log'
@@ -73,11 +77,13 @@ const findOneProduct = async ({ productId, dbconnection }) => {
   }
 };
 
-// find all products from the database
+/**
+ * Finds products with optional filters and pagination.
+ * @param {{ dbconnection: Function, logEvents: Function, category?: string, minPrice?: number, maxPrice?: number, page?: number, perPage?: number, searchTerm?: string }} opts
+ * @returns {Promise<{ data: Object[], totalProducts: number, totalPages: number, page: number, perPage: number }|[]>}
+ */
 const findAllProducts = async ({ dbconnection, logEvents, ...filterOptions }) => {
   const { category, minPrice, maxPrice, page, perPage, searchTerm } = filterOptions;
-
-  //TODO: id necessary add limiting fields. this affect the projection props
 
   const filter = {};
   if (category) filter.category = category;
@@ -126,7 +132,7 @@ const findAllProducts = async ({ dbconnection, logEvents, ...filterOptions }) =>
       perPage,
     };
   } catch (error) {
-    console.log('Error from product DB handler: ', error);
+    log.error('Error from product DB handler:', error.message);
     logEvents(
       `${error.no}:${error.code}\t${error.ReferenceError || error.TypeError}\t${error.message}`,
       'product.log'
@@ -135,14 +141,18 @@ const findAllProducts = async ({ dbconnection, logEvents, ...filterOptions }) =>
   }
 };
 
-// delete product from DB
+/**
+ * Deletes a product by ID.
+ * @param {{ productId: import('mongodb').ObjectId, dbconnection: Function, logEvents: Function }} opts
+ * @returns {Promise<{ id: import('mongodb').ObjectId }|null>}
+ */
 const deleteProduct = async ({ productId, dbconnection, logEvents }) => {
   const db = await dbconnection();
   try {
     const result = await db.collection('products').deleteOne({ _id: productId });
     return result.deletedCount > 0 ? { id: productId } : null;
   } catch (error) {
-    console.log('Error from product DB handler: ', error);
+    log.error('Error from product DB handler:', error.message);
     logEvents(
       `${error.no}:${error.code}\t${error.ReferenceError || error.TypeError}\t${error.message}`,
       'product.log'
@@ -151,21 +161,25 @@ const deleteProduct = async ({ productId, dbconnection, logEvents }) => {
   }
 };
 
-// update product use case handler
+/**
+ * Updates a product by ID.
+ * @param {{ productId: string, dbconnection: Function, logEvents: Function }} opts
+ * @param {Object} productData - Fields to update.
+ * @returns {Promise<import('mongodb').ModifyResult<Object>>}
+ */
 const updatedProduct = async ({ productId, dbconnection, logEvents, ...productData }) => {
   const db = await dbconnection();
   try {
-    const updatedProduct = await db
+    const result = await db
       .collection('products')
       .findOneAndUpdate(
         { _id: new ObjectId(productId) },
         { $set: { ...productData } },
-        { returnOriginal: false }
+        { returnDocument: 'after' }
       );
-
-    return updatedProduct;
+    return result;
   } catch (error) {
-    console.log('Error from product DB handler: ', error);
+    log.error('Error from product DB handler:', error.message);
     logEvents(
       `${error.no}:${error.code}\t${error.ReferenceError || error.TypeError}\t${error.message}`,
       'productDBErr.log'
@@ -174,14 +188,16 @@ const updatedProduct = async ({ productId, dbconnection, logEvents, ...productDa
   }
 };
 
-// create a rating document and update product document alongside
-// we are creating transaction session to ensure data consistency
-
+/**
+ * Creates a rating and updates the product's rating aggregates in a transaction.
+ * @param {{ logEvents: Function, productId: string, userId: string, ratingValue: number }} ratingModel
+ * @returns {Promise<Object>}
+ */
 const rateProduct = async ({ logEvents, ...ratingModel }) => {
-  const client = new MongoClient(process.env.MONGODB_URI);
+  const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+  const client = new MongoClient(mongoUri);
   const session = client.startSession();
 
-  /* start a transaction session */
   const transactionOptions = {
     readPreference: 'primary',
     readConcern: { level: 'local' },
@@ -189,21 +205,18 @@ const rateProduct = async ({ logEvents, ...ratingModel }) => {
   };
 
   const lastModified = Date.now();
-  /* set up filter */
   const filter = { _id: new ObjectId(ratingModel.productId) };
+  const dbName = process.env.MONGO_DB_NAME || 'digital-market-place-updates';
+
   try {
     return await session.withTransaction(async () => {
-      /* initialize db collections. clientSession and client MUST be in the same session */
-      const productCollection = client.db('digital-market-place-updates').collection('products');
-      const ratingCollection = client.db('digital-market-place-updates').collection('ratings');
-
-      // check if the product exists
+      const productCollection = client.db(dbName).collection('products');
+      const ratingCollection = client.db(dbName).collection('ratings');
       const existingProduct = await productCollection.findOne(
         { _id: new ObjectId(ratingModel.productId) },
         { session }
       );
       if (!existingProduct) {
-        // cannot rate ghost product.
         session.abortTransaction();
         return {
           error: {
@@ -213,7 +226,6 @@ const rateProduct = async ({ logEvents, ...ratingModel }) => {
         };
       }
 
-      /* find first if this user has already rate this existing product*/
       const existingRating = await ratingCollection.findOne(
         { userId: ratingModel.userId, productId: ratingModel.productId },
         { session }
@@ -228,7 +240,6 @@ const rateProduct = async ({ logEvents, ...ratingModel }) => {
         };
       }
 
-      /* create a new rating document */
       const newRating = await ratingCollection.insertOne(ratingModel, { session });
       const { totalRatings } = existingProduct;
       const totalReviews = totalRatings?.reduce((sum, rating) => sum + rating, 0) || 0;
@@ -236,7 +247,6 @@ const rateProduct = async ({ logEvents, ...ratingModel }) => {
         ? totalRatings?.reduce((sum, rating, index) => sum + rating * (index + 1), 0) / totalReviews
         : existingProduct.rateAverage;
 
-      /* increase the new rating value in the totalRatings array */
       for (let index = 0; index < 5; index++) {
         if (ratingModel.ratingValue === index + 1) {
           totalRatings[index] = totalRatings[index] + 1;
@@ -248,7 +258,6 @@ const rateProduct = async ({ logEvents, ...ratingModel }) => {
         totalRatings,
       };
 
-      /* update the product document */
       const updatedProduct = await productCollection.findOneAndUpdate(
         filter,
         {
@@ -262,18 +271,16 @@ const rateProduct = async ({ logEvents, ...ratingModel }) => {
         },
         { session }
       );
-      // await session.commitTransaction(); NO NEED TO EXPLICITELY DO IT, IT'S DONE BEHIND THE SCENE BY MONGODB DRIVER
       return { updatedProduct, newRating };
     }, transactionOptions);
   } catch (error) {
-    console.log('Error from product DB handler: ', error);
+    log.error('Error from product DB handler:', error.message);
     logEvents(
       `${error.no}:${error.code}\t${error.ReferenceError || error.TypeError}\t${error.message}`,
       'productDBErr.log'
     );
     throw new Error(error.message || error.ReferenceError || error.TypeError);
   } finally {
-    // End the session
     session.endSession();
     await client.close();
   }
@@ -287,8 +294,6 @@ module.exports = ({ dbconnection, logEvents }) => {
       findOneProduct({ productId, dbconnection, logEvents }),
     findAllProductsDbHandler: async (filterOptions) =>
       findAllProducts({ dbconnection, logEvents, ...filterOptions }),
-    // updateProductDbHandler: async ({ productId, productData }) =>
-    //   updateProduct({ productId, productData, dbconnection, logEvents }),
     deleteProductDbHandler: async ({ productId }) =>
       deleteProduct({ productId, dbconnection, logEvents }),
     updateProductDbHandler: async ({ productId, ...productData }) =>

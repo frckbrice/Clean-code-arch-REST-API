@@ -16,25 +16,20 @@
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               firstName:
- *                 type: string
- *               lastName:
- *                 type: string
- *               role:
- *                 type: string
+ *             $ref: '#/components/schemas/RegisterInput'
  *     responses:
  *       201:
  *         description: User registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       400:
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 const router = require('express').Router();
 const makeResponseCallback = require('../interface-adapters/adapter/request-response-adapter');
@@ -67,17 +62,20 @@ router.post('/register', async (req, res) =>
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
+ *             $ref: '#/components/schemas/LoginInput'
  *     responses:
  *       200:
  *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginResponse'
  *       400:
  *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/login', loginLimiter, async (req, res) =>
   makeResponseCallback(loginUserControllerHandler)(req, res)
@@ -97,6 +95,10 @@ router.post('/login', loginLimiter, async (req, res) =>
  *         description: Logout successful
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/logout', authVerifyJwt, async (req, res) =>
   makeResponseCallback(logoutUserControllerHandler)(req, res)
@@ -112,8 +114,16 @@ router.post('/logout', authVerifyJwt, async (req, res) =>
  *     responses:
  *       200:
  *         description: Token refreshed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginResponse'
  *       401:
  *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/refresh-token', authVerifyJwt, async (req, res) =>
   makeResponseCallback(refreshTokenUserControllerHandler)(req, res)
@@ -131,15 +141,16 @@ router.post('/refresh-token', authVerifyJwt, async (req, res) =>
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
+ *             $ref: '#/components/schemas/ForgotPasswordInput'
  *     responses:
  *       200:
  *         description: Password reset email sent
  *       400:
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/forgot-password', async (req, res) =>
   makeResponseCallback(forgotPasswordControllerHandler)(req, res)
@@ -155,17 +166,16 @@ router.post('/forgot-password', async (req, res) =>
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               token:
- *                 type: string
- *               newPassword:
- *                 type: string
+ *             $ref: '#/components/schemas/ResetPasswordInput'
  *     responses:
  *       200:
  *         description: Password reset successful
  *       400:
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post('/reset-password', async (req, res) =>
   makeResponseCallback(resetPasswordControllerHandler)(req, res)

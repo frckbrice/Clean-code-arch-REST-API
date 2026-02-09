@@ -1,6 +1,8 @@
+'use strict';
+
 const jwt = require('jsonwebtoken');
 const expressAsyncHandler = require('express-async-handler');
-const { logEvents } = require('./loggers/logger');
+const { logEvents, log } = require('./loggers/logger');
 
 const authVerifyJwt = expressAsyncHandler((req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
@@ -39,7 +41,7 @@ const authVerifyJwt = expressAsyncHandler((req, res, next) => {
       }
     );
   } catch (error) {
-    console.error('catch error on authVerifyJwt', error);
+    log.error('authVerifyJwt', error.message);
     logEvents(`${error.no}:${error.code}\t${error.name}\t${error.message}`, 'authVerifyJwt.log');
     return res.status(500).json({ error: 'Internal server error' });
   }

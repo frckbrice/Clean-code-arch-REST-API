@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
@@ -5,7 +7,7 @@ const path = require('path');
 
 const { dbconnection } = require('./interface-adapters/database-access/db-connection.js');
 const errorHandler = require('./interface-adapters/middlewares/loggers/errorHandler.js');
-const { logger } = require('./interface-adapters/middlewares/loggers/logger.js');
+const { logger, log } = require('./interface-adapters/middlewares/loggers/logger.js');
 const createIndexFn = require('./interface-adapters/database-access/db-indexes.js');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
@@ -17,7 +19,8 @@ const swaggerDefinition = {
   info: {
     title: 'Clean Architecture REST API',
     version: '1.0.0',
-    description: 'API documentation for the Clean Architecture Node.js REST API',
+    description:
+      "REST API demonstrating Uncle Bob's Clean Architecture: testable, maintainable, and framework-agnostic business logic. See the **Schemas** section for all request/response models.",
     contact: {
       name: 'Avom Brice',
       email: 'bricefrkc@gmail.com',
@@ -26,7 +29,7 @@ const swaggerDefinition = {
   servers: [
     {
       url: `http://localhost:${PORT}`,
-      description: 'Local server API documentation',
+      description: 'Local server',
     },
   ],
   components: {
@@ -37,8 +40,59 @@ const swaggerDefinition = {
         bearerFormat: 'JWT',
       },
     },
+    schemas: {
+      RegisterInput: {
+        type: 'object',
+        required: ['email', 'password'],
+        properties: {
+          username: { type: 'string', example: 'johndoe' },
+          email: { type: 'string', format: 'email', example: 'john@example.com' },
+          password: { type: 'string', format: 'password', minLength: 8 },
+          firstName: { type: 'string', example: 'John' },
+          lastName: { type: 'string', example: 'Doe' },
+          role: { type: 'string', enum: ['user', 'admin'], default: 'user' },
+        },
+      },
+      LoginInput: {
+        type: 'object',
+        required: ['email', 'password'],
+        properties: {
+          email: { type: 'string', format: 'email' },
+          password: { type: 'string', format: 'password' },
+        },
+      },
+      LoginResponse: {
+        type: 'object',
+        properties: {
+          user: { $ref: '#/components/schemas/User' },
+          accessToken: { type: 'string', description: 'JWT access token' },
+          refreshToken: { type: 'string', description: 'JWT refresh token' },
+        },
+      },
+      ForgotPasswordInput: {
+        type: 'object',
+        required: ['email'],
+        properties: { email: { type: 'string', format: 'email' } },
+      },
+      ResetPasswordInput: {
+        type: 'object',
+        required: ['token', 'newPassword'],
+        properties: {
+          token: { type: 'string', description: 'Password reset token from email' },
+          newPassword: { type: 'string', format: 'password', minLength: 8 },
+        },
+      },
+      Error: {
+        type: 'object',
+        properties: {
+          message: { type: 'string' },
+          code: { type: 'string' },
+          statusCode: { type: 'integer' },
+        },
+      },
+    },
   },
-  security: [{ bearerAuth: [] }],
+  security: [],
 };
 
 const options = {
@@ -49,12 +103,11 @@ const swaggerSpec = swaggerJSDoc(options);
 
 const app = express();
 
-var cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const corsOptions = require('./interface-adapters/middlewares/config/corsOptions.Js');
 
-// database connection call function
 dbconnection().then((db) => {
-  console.log('database connected: ', db.databaseName);
+  log.info('database connected:', db.databaseName);
   createIndexFn();
 });
 
@@ -67,17 +120,17 @@ app.use(express.urlencoded({ extended: false }));
 // Register Swagger UI BEFORE any static or catch-all routes
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Use the new single entry point for all routes
 const mainRouter = require('./routes');
 
-// Only serve index.html for the root path
 app.get('/', (_, res) => {
   res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
 });
 
+// Serve static assets (CSS, images) from public
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/', mainRouter);
 
-//for no specified endpoint that is not found. this must after all the middlewares
 app.all('*', (req, res) => {
   res.status(404);
   if (req.accepts('html')) {
@@ -90,22 +143,18 @@ app.all('*', (req, res) => {
 });
 
 app.use((req, res, next) => {
-  // Access DNT header (if present)
   const dntHeader = req.headers['dnt'];
   if (dntHeader === '1') {
-    console.log('User has DNT enabled');
-    // TODO: Implement logic to handle DNT preference (e.g., disable tracking features)
+    log.debug('User has DNT enabled');
   }
-  // Pass control to the next middleware or route handler
   next();
 });
 
 app.use(errorHandler);
 
-// Only call app.listen() if not in test
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    log.info('Server is running on port', PORT);
   });
 }
 

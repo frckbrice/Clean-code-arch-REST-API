@@ -4,11 +4,14 @@
   "description": "to sell products and services",
   "main": "index.js",
   "license": "ISC",
+  "engines": {
+    "node": ">=22"
+  },
   "author": {
     "name": "avom brice ",
-    "address": "frckbrice <bricefrkc@gmail,com> (https://maebrie.vercel.app)",
+    "address": "frckbrice <bricefrkc@gmail,com> (https://maebrieporfolio.vercel.app)",
     "date": "jun 12 2024",
-    "update": "jul 22 2025"
+    "update": "feb 09 2026"
   },
   "scripts": {
     "start": "node index.js",
@@ -16,8 +19,7 @@
     "lint": "eslint . --ext .js",
     "format": "prettier --write .",
     "prepare": "husky install",
-    "test": "jest --runInBand --detectOpenHandles",
-    "build": "tsc --noEmitOnError"
+    "test": "jest --runInBand --detectOpenHandles"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

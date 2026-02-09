@@ -55,10 +55,7 @@ function validateNumber(quantity, InvalidPropertyError) {
   return quantity;
 }
 
-// constructs an enumeration of colors
 function validateColors(colors, InvalidPropertyError) {
-  console.log('color: ', colors);
-
   if (!Array.isArray(colors)) {
     return [colors];
   }
@@ -71,40 +68,7 @@ function validateColors(colors, InvalidPropertyError) {
   return [...new Set(colors)];
 }
 
-// constructs an enumeration of brands
-// function validateBrands(brands, InvalidPropertyError) {
-//   console.log('brand: ', brands);
-//   if (!Array.isArray(brands)) {
-//     return [brands];
-//   }
-
-//   const validbrands = new Set([
-//     'Apple',
-//     'Samsung',
-//     'Microsoft',
-//     'Lenovo',
-//     'Acer',
-//     'Asus',
-//     'HP',
-//     'Dell',
-//   ]);
-//   if (brands.length === 0 || !brands.some((color) => validbrands.has(color))) {
-//     throw new InvalidPropertyError(`A product must have at least one color.`);
-//   }
-
-//   return [...new Set(brands)];
-// }
-
-//validate and normalize product rating: rating is an array of refences to users in the users collection
-// function validateRating(rating, InvalidPropertyError) {
-//   const ratingObj = {};
-
-//   return rating;
-// }
-
-// validate image type for png jpg
 const validateImageType = (image, InvalidPropertyError) => {
-  console.log('image: ', image);
   const extention = image.split('.').pop();
   if (extention !== 'png' && extention !== 'jpg') {
     throw new InvalidPropertyError(`Invalid image type.`);
@@ -114,15 +78,10 @@ const validateImageType = (image, InvalidPropertyError) => {
 };
 
 //validate images as array of strings
-const normaliseImages = (images) => {
-  console.log('images: ', images);
-  return images.map(validateImageType);
-};
+const normaliseImages = (images, InvalidPropertyError) =>
+  images.map((img) => validateImageType(img, InvalidPropertyError));
 
-//validate variations of product as an object with properties size, color, material, fit, quantity
 const validateVariation = (variations) => {
-  console.log('variations: ', variations);
-
   const newVariation = variations.map((variation) => ({
     size: variation.size ? String(variation.size) : null,
     color: variation.color ? String(variation.color) : null,
@@ -158,9 +117,7 @@ const validateObjectId = (id, InvalidPropertyError) => {
   return id;
 };
 
-//basic product validation
 const basicProductValidation = ({ productData, errorHandlers }) => {
-  console.log('start validations: ');
   const errors = [];
   const { RequiredParameterError, InvalidPropertyError } = errorHandlers;
   const resultingProductData = {};
@@ -259,7 +216,6 @@ const basicProductValidation = ({ productData, errorHandlers }) => {
   if (errors.length) {
     throw new RequiredParameterError(errors.join(', '));
   }
-  console.log('successfully validated product: ');
   return resultingProductData;
 };
 

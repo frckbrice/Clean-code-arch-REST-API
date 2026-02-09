@@ -70,12 +70,7 @@ public/               # Static files and HTML views
    ```bash
    yarn install
    ```
-3. Create a `.env` file in the root with your environment variables:
-   ```env
-   PORT=5000
-   MONGO_URI=mongodb://localhost:27017/your-db
-   JWT_SECRET=your_jwt_secret
-   ```
+3. Copy `.env.example` to `.env` and set your environment variables. For production, set `NODE_ENV=production` (logging is disabled in production; file and console logs run only in development).
 4. Start the server:
    ```bash
    yarn dev
@@ -147,7 +142,7 @@ See the `routes/` directory for all endpoints. Example:
 
 ## Troubleshooting
 
-- See [troubleshooting.md](./troubleshooting.md) for common issues and solutions.
+- See [troubleshooting.md](./docs/troubleshooting.md) for common issues and solutions.
 
 ## License
 

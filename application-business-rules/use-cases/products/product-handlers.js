@@ -1,5 +1,7 @@
+'use strict';
+
 const productValidationFcts = require('../../../enterprise-business-rules/validate-models/product-validation-fcts');
-// const { findAllProductUseCaseHandler } = require('./product-handlers');
+const { log } = require('../../../interface-adapters/middlewares/loggers/logger');
 
 /**
  * Creates a new product in the database using the provided product data.
@@ -24,12 +26,14 @@ const createProductUseCase = ({ makeProductModelHandler }) =>
       const newProduct = await createProductDbHandler(validatedProductData);
       return Object.freeze(newProduct);
     } catch (error) {
-      console.log('Error from create product handler: ', error);
+      log.error('Error from create product handler:', error.message);
       throw new Error(error.message);
     }
   };
 
-//find one product from DB
+/**
+ * Fetches a single product by ID.
+ */
 const findOneProductUseCase = ({ productValidation }) =>
   async function findOneProductUseCaseHandler({
     productId,
@@ -44,25 +48,28 @@ const findOneProductUseCase = ({ productValidation }) =>
       const newProduct = await findOneProductDbHandler({ productId: uuid });
       return Object.freeze(newProduct);
     } catch (error) {
-      console.log('Error from fetch one product handler: ', error);
+      log.error('Error from fetch one product handler:', error.message);
       throw new Error(error.message);
     }
   };
 
-// find all product use case handler
+/**
+ * Fetches all products with optional filters.
+ */
 const findAllProductsUseCase = () =>
   async function findAllProductUseCaseHandler({ dbProductHandler, filterOptions }) {
     try {
       const allProducts = await dbProductHandler.findAllProductsDbHandler(filterOptions);
-      // console.log('from find all products use case: ', allProducts);
       return Object.freeze(allProducts.data);
     } catch (e) {
-      console.log('Error from fetch all product handler: ', e);
+      log.error('Error from fetch all product handler:', e.message);
       throw new Error(e.message);
     }
   };
 
-// delete product use case
+/**
+ * Deletes a product by ID.
+ */
 const deleteProductUseCase = () =>
   async function deleteProductUseCaseHandler({ productId, dbProductHandler, errorHandlers }) {
     const { findOneProductDbHandler, deleteProductDbHandler } = dbProductHandler;
@@ -83,12 +90,14 @@ const deleteProductUseCase = () =>
       };
       return Object.freeze(result);
     } catch (error) {
-      console.log('Error from delete product handler: ', error);
+      log.error('Error from delete product handler:', error.message);
       throw new Error(error.message);
     }
   };
 
-// update product
+/**
+ * Updates a product by ID.
+ */
 const updateProductUseCase = ({ makeProductModelHandler }) =>
   async function updateProductUseCaseHandler({
     productId,
@@ -113,17 +122,17 @@ const updateProductUseCase = ({ makeProductModelHandler }) =>
         errorHandlers,
       });
 
-      // store product in database mongodb
       const newProduct = await updateProductDbHandler({ productId, ...productData });
-      console.log(' from product handler after DB: ', newProduct);
       return Object.freeze(newProduct);
     } catch (error) {
-      console.log('Error from update product handler: ', error);
+      log.error('Error from update product handler:', error.message);
       throw new Error(error.message);
     }
   };
 
-// rate product in transaction with both Rate model and Product model
+/**
+ * Rates a product (creates rating and updates product aggregates in a transaction).
+ */
 const rateProductUseCase = ({ makeProductRatingModelHandler }) =>
   async function rateProductUseCaseHandler({
     userId,
@@ -132,16 +141,13 @@ const rateProductUseCase = ({ makeProductRatingModelHandler }) =>
     dbProductHandler,
     errorHandlers,
   }) {
-    console.log('hit rating use case handler');
     const ratingData = { ratingValue, userId, productId };
     try {
-      /* validate and build rating model */
       const ratingModel = await makeProductRatingModelHandler({ errorHandlers, ...ratingData });
       const newProduct = await dbProductHandler.rateProductDbHandler(ratingModel);
-      console.log(' from rating product handler after DB: ', newProduct);
       return Object.freeze(newProduct);
     } catch (error) {
-      console.log('Error from fetch one product handler: ', error);
+      log.error('Error from rating product handler:', error.message);
       throw new Error(error.message);
     }
   };
