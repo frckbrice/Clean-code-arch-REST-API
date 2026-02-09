@@ -1,4 +1,5 @@
 
+
 # Clean code Architecture pattern applied to Node.js REST API Example 
 
 
@@ -9,6 +10,7 @@
 **Objective:**
 
 > This project demonstrates how to apply Uncle Bob's Clean Architecture principles in a Node.js REST API. It is designed as an educational resource to help developers structure their projects for maximum testability, maintainability, and scalability. The codebase shows how to keep business logic independent from frameworks, databases, and delivery mechanisms.
+
 
 ## Stack
 
@@ -36,6 +38,36 @@
 - **Example:**
   - The product use case receives a `createProductDbHandler` as a parameter. In production, this is the real DB handler; in tests, it's a mock function.
   - Lower layers (domain, use cases) never import or reference Express, MongoDB, or any framework code.
+
+=======
+
+## Stack
+
+- **Node.js** (Express.js) for the REST API
+- **MongoDB** (MongoClient) for persistence
+- **Jest** & **Supertest** for unit and integration testing
+- **ESLint** & **Prettier** for linting and formatting
+- **Docker** & **Docker Compose** for containerization
+- **GitHub Actions** for CI/CD
+
+## Why Clean Architecture?
+
+- **Separation of Concerns:** Each layer has a single responsibility and is independent from others.
+- **Dependency Rule:** Data and control flow from outer layers (e.g., routes/controllers) to inner layers (use cases, domain), never the reverse. Lower layers are unaware of upper layers.
+- **Testability:** Business logic can be tested in isolation by injecting dependencies (e.g., mock DB handlers) from above. No real database is needed for unit tests.
+- **Security & Flexibility:** Infrastructure (DB, frameworks) can be swapped without touching business logic.
+
+> **✨ Ultimate Flexibility:**
+> This project demonstrates that your core business logic is never tied to any specific framework, ORM, or database. You can switch from Express to Fastify, MongoDB to PostgreSQL, or even move to a serverless environment—without rewriting your business rules. The architecture ensures your codebase adapts easily to new technologies, making future migrations and upgrades painless. This is true Clean Architecture in action: your app’s heart beats independently of any tool or vendor.
+
+## How Testing Works
+
+- **Unit tests** inject mocks for all dependencies (DB, loggers, etc.) into use cases and controllers. This means you can test all business logic without a real database or server.
+- **Integration tests** can use a real or in-memory database, but the architecture allows you to swap these easily.
+- **Example:**
+  - The product use case receives a `createProductDbHandler` as a parameter. In production, this is the real DB handler; in tests, it's a mock function.
+  - Lower layers (domain, use cases) never import or reference Express, MongoDB, or any framework code.
+
 
 ## Project Structure
 
@@ -89,7 +121,7 @@ public/               # Static files and HTML views
    ```bash
    yarn install
    ```
-3. Copy `.env.example` to `.env` and set your environment variables. For production, set `NODE_ENV=production` (logging is disabled in production; file and console logs run only in development).
+3. Copy `.env.example` to `.env` and set your environment variables. For production, set `NODE_ENV=production` 
 4. Start the server:
    ```bash
    yarn dev
