@@ -117,6 +117,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
+// Health check route (for load balancers, Docker, k8s)
+app.get('/health', (_, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Register Swagger UI BEFORE any static or catch-all routes
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
