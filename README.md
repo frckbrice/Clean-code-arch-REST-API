@@ -1,4 +1,6 @@
-# Clean Architecture Node.js REST API Example
+
+# Clean code Architecture pattern applied to Node.js REST API Example 
+
 
 <div style="width:100%; text-align:center">
   <img src="public/images/clean-code_arch.jpeg" width="600">
@@ -51,6 +53,23 @@ interface-adapters/
 routes/               # Express route definitions
 public/               # Static files and HTML views
 ```
+
+
+## Features
+
+- User registration and authentication (JWT)
+- Product CRUD operations
+- Blog and rating management
+- Role-based access control (admin, blocked users)
+- Input validation and error handling
+- Modular, testable codebase
+
+## Stack
+- Express.js
+- Javascript
+- MongoDB doker image
+- Jest
+- Mongo-client + Mongosh
 
 ## Getting Started
 
