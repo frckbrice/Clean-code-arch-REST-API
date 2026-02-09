@@ -1,24 +1,22 @@
+'use strict';
+
+const { log } = require('../../interface-adapters/middlewares/loggers/logger');
+
 module.exports = {
   makeUserModel: ({ userValidationData, logEvents }) => {
     return async function makeUser({ userData, update = false }) {
-      console.log('hit user model: ');
       const { validateUserData, normalise, validateUserDataUpdates } = userValidationData;
-      let normalisedUserData = {},
-        validatedUserData = null;
+      let normalisedUserData = {};
       try {
-        // for update user data we have to set "update = true" from the user handler
-        if (update) {
-          validatedUserData = await validateUserDataUpdates({ ...userData });
-          console.log('hit user model after validate user data for update true: ');
-        } else {
-          validatedUserData = await validateUserData({ ...userData });
-          console.log('hit user model after validate user data for update false: ');
-        }
+        const validatedUserData = update
+          ? await validateUserDataUpdates({ ...userData })
+          : await validateUserData({ ...userData });
         normalisedUserData = await normalise(validatedUserData);
         return Object.freeze(normalisedUserData);
       } catch (error) {
-        console.log('Error from user-model handler: ', error);
+        log.error('Error from user-model handler:', error.message);
         logEvents(`${error.no}:${error.code}\t${error.name}\t${error.message}`, 'user-model.log');
+        throw error;
       }
     };
   },

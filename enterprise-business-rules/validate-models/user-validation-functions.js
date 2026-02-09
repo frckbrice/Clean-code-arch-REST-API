@@ -83,18 +83,23 @@ async function validatePassword(password) {
 }
 
 // Validate role of the user, either user or admin
-const validRoles = new Set(['user', 'admin']);
 function validateRole(roles) {
-  // make role always an array
-
-  if (!validRoles.has(roles)) {
+  const validRoles = new Set(['user', 'admin']);
+  if (Array.isArray(roles)) {
+    for (const role of roles) {
+      if (!validRoles.has(role)) {
+        throw new InvalidPropertyError(`A user's role must be either 'user' or 'admin'.`);
+      }
+    }
+    return roles;
+  } else if (typeof roles === 'string') {
+    if (!validRoles.has(roles)) {
+      throw new InvalidPropertyError(`A user's role must be either 'user' or 'admin'.`);
+    }
+    return [roles];
+  } else {
     throw new InvalidPropertyError(`A user's role must be either 'user' or 'admin'.`);
   }
-
-  if (!Array.isArray(roles)) {
-    roles = [roles];
-  }
-  return roles;
 }
 
 //validate mongodb id

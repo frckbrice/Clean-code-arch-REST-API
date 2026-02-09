@@ -11,14 +11,19 @@ describe('Blog Controller Unit Tests', () => {
   it('should create a blog (mocked)', async () => {
     const createBlogUseCaseHandler = jest
       .fn()
-      .mockResolvedValue({ id: 'blog1', title: 'Test Blog' });
+      .mockResolvedValue({ id: 'blog1', title: 'Test Blog', content: 'Lorem ipsum', author: 'u1' });
     const errorHandlers = { UniqueConstraintError: Error, InvalidPropertyError: Error };
     const logEvents = jest.fn();
     const handler = createBlogController({ createBlogUseCaseHandler, errorHandlers, logEvents });
-    const httpRequest = { body: { title: 'Test Blog', content: 'Lorem ipsum' } };
+    const httpRequest = { body: { title: 'Test Blog', content: 'Lorem ipsum', author: 'u1' } };
     const response = await handler(httpRequest);
     expect(response.statusCode).toBe(201);
-    expect(response.data.createdBlog).toEqual({ id: 'blog1', title: 'Test Blog' });
+    expect(response.data.createdBlog).toEqual({
+      id: 'blog1',
+      title: 'Test Blog',
+      content: 'Lorem ipsum',
+      author: 'u1',
+    });
   });
 
   it('should return 400 if no blog data provided', async () => {

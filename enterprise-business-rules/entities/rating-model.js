@@ -1,15 +1,16 @@
+'use strict';
+
+const { log } = require('../../interface-adapters/middlewares/loggers/logger');
+
 module.exports = {
-  //make rating model
   makeRatingProductModel: ({ validateRatingModel }) =>
     async function makeProductRatingModelHandler({ errorHandlers, ...ratingData }) {
-      console.log(' hit make Rating Product model: ');
       const { InvalidPropertyError } = errorHandlers;
-
       try {
         const validatedRatingData = await validateRatingModel(ratingData, InvalidPropertyError);
         return Object.freeze(validatedRatingData);
       } catch (error) {
-        console.log('Error from rating-model handler: ', error);
+        log.error('Error from rating-model handler:', error.message);
         throw new Error(error.message);
       }
     },

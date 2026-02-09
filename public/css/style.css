@@ -5,27 +5,245 @@
 }
 
 html {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 2.5rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: #21202e;
-  color: rgb(203, 197, 197);
+  background: linear-gradient(160deg, #f0f4ff 0%, #e8ecf7 50%, #f5f7fb 100%);
+  color: #1e293b;
+  line-height: 1.6;
+  min-height: 100vh;
 }
 
-center {
+/* Home page */
+.home {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
 }
 
+.home__header {
+  margin-bottom: 3rem;
+}
+
+.home__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.home__logo-icon {
+  font-family: 'JetBrains Mono', monospace;
+  color: #6366f1;
+  font-size: 1.25rem;
+}
+
+.home__logo-text {
+  font-weight: 500;
+  font-size: 1rem;
+  color: #64748b;
+}
+
+.home__main {
+  flex: 1;
+}
+
+.home__hero {
+  margin-bottom: 2.5rem;
+  padding: 2rem 0;
+}
+
+.home__title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.home__tagline {
+  color: #475569;
+  font-size: 1.1rem;
+  max-width: 32ch;
+}
+
+/* Card grid layout */
+.home__cards {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.home__card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.home__card:hover {
+  border-color: #c7d2fe;
+  box-shadow: 0 4px 20px rgba(124, 122, 255, 0.12);
+}
+
+.home__objective,
+.home__features,
+.home__cta,
+.home__stack {
+  margin-bottom: 0;
+}
+
+.home__card h2 {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6366f1;
+  margin-bottom: 0.75rem;
+}
+
+.home__objective p,
+.home__features p,
+.home__stack p {
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.home__feature-list {
+  list-style: none;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.home__feature-list li {
+  padding: 0.35rem 0;
+  padding-left: 1rem;
+  border-left: 2px solid #a5b4fc;
+  margin-bottom: 0.5rem;
+}
+
+.home__feature-list strong {
+  color: #1e293b;
+}
+
+.home__cta p {
+  margin-bottom: 1rem;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.home__btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  text-decoration: none;
+  transition:
+    opacity 0.2s,
+    transform 0.1s,
+    box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+}
+
+.home__btn:hover {
+  opacity: 0.95;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+}
+
+/* Footer & developer */
+.home__footer {
+  margin-top: auto;
+  padding-top: 2.5rem;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.home__developer {
+  margin-bottom: 1.25rem;
+  padding: 1.25rem;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.home__developer h3 {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6366f1;
+  margin-bottom: 0.5rem;
+}
+
+.home__developer-name {
+  font-weight: 500;
+  color: #1e293b;
+  margin-bottom: 0.35rem;
+}
+
+.home__developer-contact {
+  margin-bottom: 0.35rem;
+}
+
+.home__developer-contact a {
+  color: #4f46e5;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.home__developer-contact a:hover {
+  color: #6366f1;
+  text-decoration: underline;
+}
+
+.home__developer-sep {
+  margin: 0 0.5rem;
+  color: #94a3b8;
+}
+
+.home__developer-meta {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.home__footer-legal {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* 404 page */
 .diverrormessage {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 20px;
+  font-family: 'Outfit', sans-serif;
+  background: linear-gradient(160deg, #f0f4ff 0%, #e8ecf7 50%, #f5f7fb 100%);
+}
+
+.diverrormessage h1 {
+  font-size: 1.5rem;
+  color: #1e293b;
+}
+
+.diverrormessage p {
+  color: #475569;
+  font-size: 0.95rem;
 }

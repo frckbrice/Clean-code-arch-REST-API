@@ -1,3 +1,12 @@
+'use strict';
+
+const { log } = require('../middlewares/loggers/logger');
+
+/**
+ * Wraps a controller so it receives an HTTP request object and sends the controller response.
+ * @param {Function} controller - Async (httpRequest) => httpResponse
+ * @returns {Function} Express (req, res) handler
+ */
 module.exports = (controller) =>
   function responseAdapterHandler(req, res) {
     const httpRequest = {
@@ -16,7 +25,7 @@ module.exports = (controller) =>
 
     controller(httpRequest)
       .then((httpResponse) => {
-        console.log('response adapter: ', httpResponse);
+        log.debug('response adapter:', JSON.stringify(httpResponse));
         if (httpResponse.headers) {
           res.set(httpResponse.headers);
         }
@@ -24,7 +33,7 @@ module.exports = (controller) =>
         res
           .type('json')
           .status(httpResponse.statusCode || 400)
-          .send(httpResponse.data || 'INTERNAL SERVER ERROR');
+          .send(httpResponse.data || 'BAD REQUEST');
       })
       .catch((e) => {
         res
