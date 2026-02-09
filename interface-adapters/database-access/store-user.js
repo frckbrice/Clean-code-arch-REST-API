@@ -1,6 +1,8 @@
+'use strict';
+
 const { ObjectId } = require('mongodb');
 const { UniqueConstraintError } = require('../validators-errors/errors');
-const { logEvents } = require('../middlewares/loggers/logger');
+const { logEvents, log } = require('../middlewares/loggers/logger');
 
 /**
  * Asynchronously finds a user by email in the given database connection.
@@ -41,8 +43,9 @@ async function findUserByEmail(email, dbconnection) {
     delete user.password;
     return { id, ...user };
   } catch (error) {
-    console.log('error checking for thexistence of user in DB', error);
+    log.error('error checking for existence of user in DB', error.message);
   }
+  return null;
 }
 
 /**
@@ -85,12 +88,14 @@ async function findUserById(id, dbconnection) {
     delete user.password;
     return { id, ...user };
   } catch (error) {
-    console.log('error checking for thexistence of user in DB', error);
+    log.error('error checking for existence of user in DB', error.message);
     return null;
   }
 }
 
-// find user by token
+/**
+ * Finds a user by password reset token.
+ */
 async function findUserByToken(token, dbconnection) {
   const db = await dbconnection();
   try {
@@ -108,7 +113,7 @@ async function findUserByToken(token, dbconnection) {
     delete user.password;
     return { id, ...user };
   } catch (error) {
-    console.log('error checking for thexistence of user in DB', error);
+    log.error('error checking for existence of user in DB', error.message);
     return null;
   }
 }
@@ -129,7 +134,6 @@ async function findUserByEmailForLogin(email, dbconnection) {
     const user = await db
       .collection('users')
       .findOne({ email }, { projection: { _id: 1, email: 1, roles: 1, password: 1 } });
-    console.log(' checking for the xistence of user in DB', user);
     if (!user) {
       return null;
     }
@@ -141,8 +145,8 @@ async function findUserByEmailForLogin(email, dbconnection) {
       password: user.password,
     };
   } catch (error) {
-    console.log('error checking for thexistence of user in DB', error);
-    throw new Error('Error finding user by email for login: ', error.stack);
+    log.error('error checking for existence of user in DB', error.message);
+    throw new Error('Error finding user by email for login: ' + error.message);
   }
 }
 
@@ -158,15 +162,13 @@ async function registerUser(userData, dbconnection) {
   const db = await dbconnection();
   try {
     const result = await db.collection('users').insertOne({ ...userData });
-    // console.log("result: ", result);
     return result;
   } catch (error) {
     logEvents(`${error.no}:${error.code}\t${error.name}\t${error.message}`, 'user-db.log');
     if (error instanceof UniqueConstraintError) {
       throw error;
     }
-
-    console.error('error registering the user to DB: ', error);
+    log.error('error registering the user to DB:', error.message);
     return null;
   }
 }
@@ -260,25 +262,3 @@ module.exports = function makeUserdb({ dbconnection }) {
     deleteUser: async ({ id }) => deleteUser({ id, dbconnection }),
   });
 };
-
-// /**
-//  * Creates a frozen object with methods for interacting with the user database.
-//  *
-//  * @param {Object} options - The options for creating the user database object.
-//  * @param {Function} options.dbconnection - A function that returns a database connection.
-//  * @return {Object} A frozen object with methods for interacting with the user database.
-//  */
-// module.exports = ({ dbconnection }) => Object.freeze({
-//     findAllUsers: async () => (await dbconnection()).collection('users').find({}, { projection: { _id: 1, email: 1, firstName: 1, lastName: 1, mobile: 1 } }).toArray().then(result => result.map(({ _id: id, email, firstName, lastName, mobile }) => ({
-//         id: id.toString(),
-//         email,
-//         firstName,
-//         lastName,
-//         mobile
-//     }))),
-//     findUserByEmail: async ({ email }) => (await dbconnection()).collection('users').findOne({ email }),
-//     registerUser: async (userData) => (await dbconnection()).collection('users').insertOne(userData),
-//     findUserByEmailForLogin: async ({ email }) => (await dbconnection()).collection('users').find({ email }).limit(1).toArray().then(result => result[0]),
-//     updateUser: async ({ id: _id, userData }) => (await dbconnection()).collection('users').updateOne({ _id }, { $set: userData }),
-//     deleteUser: async ({ id: _id }) => (await dbconnection()).collection('users').deleteOne({ _id }).then(result => result.deletedCount),
-// })

@@ -1,4 +1,10 @@
-// create product controller
+'use strict';
+
+const { log } = require('../../middlewares/loggers/logger');
+
+/**
+ * Controller factory for creating a product.
+ */
 const createProductController = ({
   createProductUseCaseHandler,
   dbProductHandler,
@@ -91,7 +97,7 @@ const createProductController = ({
           `${e.no}:${e.ReferenceError}\t${e.name}\t${e.name}\t${e.message}`,
           'controllerHandlerErr.log'
         );
-        console.log('error from createProductController controller handler: ', e);
+        log.error('error from createProductController:', e.message);
         const statusCode =
           e instanceof UniqueConstraintError || e instanceof InvalidPropertyError ? 400 : 500;
         return {
@@ -136,12 +142,12 @@ const findOneProductController = ({
           'Content-Type': 'application/json',
           'x-content-type-options': 'nosniff',
         },
-        statusCode: 201,
+        statusCode: 200,
         data: { product },
       };
     } catch (e) {
       logEvents(`${e.no}:${e.code}\t${e.name}\t${e.message}`, 'controllerHandlerErr.log');
-      console.log('error from findOneProductController controller handler: ', e);
+      log.error('error from findOneProductController:', e.message);
       return {
         headers: {
           'Content-Type': 'application/json',
@@ -163,19 +169,29 @@ const findAllProductController = ({ dbProductHandler, findAllProductUseCaseHandl
       filterOptions,
     })
       .then((products) => {
-        // console.log("products from findAllProductController: ", products);
+        // Always return a flat array if possible
+        let safeProducts = [];
+        if (Array.isArray(products)) {
+          if (typeof products.flat === 'function') {
+            safeProducts = products.flat();
+          } else {
+            safeProducts = products;
+          }
+        } else if (products) {
+          safeProducts = [products];
+        }
         return {
           headers: {
             'Content-Type': 'application/json',
             'x-content-type-options': 'nosniff',
           },
-          statusCode: 201,
-          data: { products },
+          statusCode: 200,
+          data: { products: safeProducts },
         };
       })
       .catch((e) => {
         logEvents(`${e.no}:${e.code}\t${e.name}\t${e.message}`, 'controllerHandlerErr.log');
-        console.log('error from findAllProductController controller handler: ', e);
+        log.error('error from findAllProductController:', e.message);
         return {
           headers: {
             'Content-Type': 'application/json',
@@ -208,7 +224,6 @@ const deleteProductController = ({
     }
     return deleteProductUseCaseHandler({ productId, logEvents, dbProductHandler, errorHandlers })
       .then((deleted) => {
-        // console.log("product from deleteProductController: ", deleted);
         return {
           headers: {
             'Content-Type': 'application/json',
@@ -220,7 +235,7 @@ const deleteProductController = ({
       })
       .catch((e) => {
         logEvents(`${e.no}:${e.code}\t${e.name}\t${e.message}`, 'controllerHandlerErr.log');
-        console.log('error from deleteProductController controller handler: ', e);
+        log.error('error from deleteProductController:', e.message);
         return {
           headers: {
             'Content-Type': 'application/json',
@@ -288,7 +303,7 @@ const updateProductController = ({
       })
       .catch((e) => {
         logEvents(`${e.no}:${e.code}\t${e.name}\t${e.message}`, 'controllerHandlerErr.log');
-        console.log('error from updateProductController controller handler: ', e);
+        log.error('error from updateProductController:', e.message);
         if (e.name === 'RangeError')
           return {
             headers: {
@@ -362,7 +377,7 @@ const rateProductController = ({
       })
       .catch((e) => {
         logEvents(`${e.no}:${e.type}\t${e.name}\t${e.message}`, 'controllerHandlerErr.log');
-        console.error('error from rateProductController controller handler: ', e);
+        log.error('error from rateProductController:', e.message);
         if (e.name === 'RangeError')
           return {
             headers: {
@@ -383,12 +398,11 @@ const rateProductController = ({
       });
   };
 
-module.exports = () =>
-  Object.freeze({
-    createProductController,
-    findOneProductController,
-    findAllProductController,
-    deleteProductController,
-    updateProductController,
-    rateProductController,
-  });
+module.exports = {
+  createProductController,
+  findOneProductController,
+  findAllProductController,
+  deleteProductController,
+  updateProductController,
+  rateProductController,
+};

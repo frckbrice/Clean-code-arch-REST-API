@@ -1,39 +1,39 @@
+'use strict';
+
 const MongoClient = require('mongodb').MongoClient;
-const { MongoServerSelectionError, MongoServerClosedError, MongoServerError } = require('mongodb');
-const { logEvents } = require('../../interface-adapters/middlewares/loggers/logger');
-module.exports = {
-  /**
-   * Establishes a connection to the MongoDB database and returns a reference to the database.
-   *
-   * @return {Promise<Db>} A promise that resolves to a reference to the MongoDB database.
-   */
-  dbconnection: async () => {
-    // The MongoClient is the object that references the connection to our
-    // datastore (Atlas, for example)
-    const client = new MongoClient(process.env.MONGODB_URI);
+const {
+  MongoServerSelectionError,
+  MongoServerClosedError,
+  MongoServerError,
+  MongoNetworkError,
+} = require('mongodb');
+const { logEvents, log } = require('../middlewares/loggers/logger');
 
-    // The connect() method does not attempt a connection; instead it instructs
-    // the driver to connect using the settings provided when a connection
-    // is required.
-    try {
-      await client.connect();
-    } catch (err) {
-      console.log('error connecting to database', err);
-      if (err instanceof MongoServerSelectionError || MongoServerClosedError || MongoServerError) {
-        logEvents(`${err.no}:${err.message}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log');
-      }
+/**
+ * Establishes a connection to the MongoDB database and returns a reference to the database.
+ * @returns {Promise<import('mongodb').Db>} A promise that resolves to the MongoDB database instance.
+ */
+async function dbconnection() {
+  const client = new MongoClient(process.env.MONGO_URI);
+  try {
+    await client.connect();
+  } catch (err) {
+    log.error('error connecting to database', err.message);
+    if (
+      err instanceof MongoServerSelectionError ||
+      err instanceof MongoServerClosedError ||
+      err instanceof MongoServerError ||
+      err instanceof MongoNetworkError
+    ) {
+      logEvents(
+        `${err.no || ''}:${err.message}\t${err.syscall || ''}\t${err.hostname || ''}`,
+        'mongoErrLog.log'
+      );
     }
+    throw err;
+  }
+  const datastoreName = process.env.MONGO_DB_NAME || 'cleanarchdb';
+  return client.db(datastoreName);
+}
 
-    // Provide the name of the database and collection you want to use.
-    // If the database and/or collection do not exist, the driver and Atlas
-    // will create them automatically when you first write data.
-    const datastoreName = 'digital-market-place-updates';
-
-    // Create references to the database and collection in order to run
-    // operations on them.
-    const database = client.db(datastoreName);
-    // const userCollection = database.collection("users");
-
-    return database;
-  },
-};
+module.exports = { dbconnection };

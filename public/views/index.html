@@ -1,19 +1,82 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>tms-system back-end</title>
+    <title>Digital Marketplace API</title>
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <center>
-      <h1>
-        Hello ! <br />
-        Welcome to app server.
-      </h1>
-      <br />
-      <h1>🦄✨👋🌎🌍🌏✨🦄</h1>
-    </center>
+    <div class="home">
+      <header class="home__header">
+        <div class="home__logo">
+          <span class="home__logo-icon">◇</span>
+          <span class="home__logo-text">Clean Code Architecture backend - based on Uncle Bob's Clean Architecture concepts</span>
+        </div>
+        <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" target="_blank" rel="noopener noreferrer" style="color:rgb(133, 133, 238); text-decoration:underline;">Uncle Bob's Clean Architecture</a>
+
+      </header>
+
+      <main class="home__main">
+        <section class="home__hero">
+          <h1 class="home__title"> RESTFul API</h1>
+          <p class="home__tagline">Sell products with a Node.js backend built on Clean Architecture</p>
+        </section>
+
+        <section class="home__cards">
+          <section class="home__card home__objective">
+            <h2>Objective</h2>
+            <p>
+              This server demonstrates how to apply <strong>Clean Architecture</strong> principles
+              in a Node.js REST API. It is designed as an educational resource to help developers
+              structure projects for <strong>testability</strong>, <strong>maintainability</strong>,
+              and <strong>scalability</strong>. Business logic stays independent from frameworks,
+              databases, and delivery mechanisms.
+            </p>
+          </section>
+
+          <section class="home__card home__features">
+            <h2>What this API provides</h2>
+            <ul class="home__feature-list">
+              <li><strong>Auth</strong> — Register, login, logout, refresh token, forgot/reset password</li>
+              <li><strong>Users</strong> — Profile, list users (admin), get/update/delete user, block/unblock</li>
+              <li><strong>Products</strong> — Full CRUD, list, get by ID, rate products</li>
+              <li><strong>Blogs</strong> — Full CRUD, list, get by ID</li>
+            </ul>
+          </section>
+
+          <section class="home__card home__cta">
+            <h2>API documentation</h2>
+            <p>Interactive OpenAPI (Swagger) specs with request/response schemas and try-it-out.</p>
+            <a href="/api-docs" class="home__btn">Open API specs →</a>
+          </section>
+
+          <section class="home__card home__stack">
+            <h2>Stack</h2>
+            <p>Node.js · Express · MongoDB · JWT · Jest & Supertest · Docker · GitHub Actions</p>
+          </section>
+        </section>
+      </main>
+
+      <footer class="home__footer">
+        <section class="home__developer">
+          <h3>Developer</h3>
+          <p class="home__developer-name">Avom Brice</p>
+          <p class="home__developer-contact">
+            <a href="mailto:bricefrkc@gmail.com">bricefrkc@gmail.com</a>
+            <span class="home__developer-sep">·</span>
+            <a href="https://maebrieporfolio.vercel.app" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          </p>
+          <p class="home__developer-meta">Created Jun 12, 2024 · Updated Feb 9, 2026</p>
+        </section>
+        <p class="home__footer-legal">Digital Marketplace API — educational resource · v1.0.0</p>
+      </footer>
+    </div>
   </body>
 </html>

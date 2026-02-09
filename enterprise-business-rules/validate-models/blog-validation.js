@@ -1,6 +1,6 @@
 const productValidation = require('./product-validation-fcts')();
 
-const { validateDescription, validateTitle, validateObjectId } = productValidation;
+const { validateDescription, validateTitle } = productValidation;
 
 //validate cover image for only more optimized types
 const validateCoverImage = ({ cover_image, InvalidPropertyError }) => {
@@ -68,7 +68,6 @@ const blogPostValidation = ({ blogPostData, errorHandlers }) => {
   resultingBlogPostData.created_at = new Date().toISOString();
   resultingBlogPostData.lastModifiedDate = null;
 
-  console.log('successfully validated blog post: ');
   return resultingBlogPostData;
 };
 module.exports = Object.freeze({

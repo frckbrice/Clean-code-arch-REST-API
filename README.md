@@ -1,4 +1,7 @@
-# Clean code Architecture pattern applied to Node.js REST API Example
+
+
+# Clean code Architecture pattern applied to Node.js REST API Example 
+
 
 <div style="width:100%; text-align:center">
   <img src="public/images/clean-code_arch.jpeg" width="600">
@@ -52,6 +55,23 @@ routes/               # Express route definitions
 public/               # Static files and HTML views
 ```
 
+
+## Features
+
+- User registration and authentication (JWT)
+- Product CRUD operations
+- Blog and rating management
+- Role-based access control (admin, blocked users)
+- Input validation and error handling
+- Modular, testable codebase
+
+## Stack
+- Express.js
+- Javascript
+- MongoDB  
+- Jest
+- Mongo-client + Mongosh
+
 ## Getting Started
 
 ### Prerequisites
@@ -76,6 +96,7 @@ public/               # Static files and HTML views
    MONGO_URI=mongodb://localhost:27017/your-db
    JWT_SECRET=your_jwt_secret
    ```
+
 4. Start the server:
    ```bash
    yarn dev
@@ -147,8 +168,11 @@ See the `routes/` directory for all endpoints. Example:
 
 ## Troubleshooting
 
-- See [troubleshooting.md](./troubleshooting.md) for common issues and solutions.
+- See [troubleshooting.md](./docs/troubleshooting.md) for common issues and solutions.
+
 
 ## License
 
 ISC License. See [LICENSE](LICENSE).
+
+

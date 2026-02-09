@@ -1,9 +1,14 @@
-const { dbconnection } = require('./db-connection');
-require('dotenv').config();
+'use strict';
 
-// all the collections stated here are created if not exist.
-module.exports = async function setupDb() {
-  console.log('Setting up database indexes...');
+const { dbconnection } = require('./db-connection');
+const { log } = require('../middlewares/loggers/logger');
+
+/**
+ * Creates indexes for products, users, and ratings collections if they do not exist.
+ * @returns {Promise<void>}
+ */
+async function createIndexFn() {
+  log.info('Setting up database indexes...');
   const db = await dbconnection();
 
   // PRODUCTS
@@ -88,7 +93,6 @@ module.exports = async function setupDb() {
   }
   allRatingsIndexName.forEach((element) => {
     if (element.name === 'ratingsUniqueIndex') {
-      // db.collection('ratings').dropIndex('ratingsUniqueIndex');
       return;
     }
     indexArr = [
@@ -100,4 +104,6 @@ module.exports = async function setupDb() {
   });
 
   await Promise.all([...indexArr]);
-};
+}
+
+module.exports = createIndexFn;
